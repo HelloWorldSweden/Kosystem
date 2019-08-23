@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Kosystem.Data.Entities
 {
+    [Table("UsersInQueue")]
     public class UserInQueueEntity
     {
         [Required]
