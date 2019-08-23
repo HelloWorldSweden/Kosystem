@@ -34,7 +34,6 @@ namespace Kosystem.Web
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddSignalR();
 
-            
             services.AddDbContext<RoomDbContext>(o => {
                 o.UseSqlServer(Configuration.GetConnectionString("RoomService"), b => b.MigrationsAssembly(typeof(Startup).Assembly.GetName().Name));
             });

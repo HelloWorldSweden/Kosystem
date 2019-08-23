@@ -16,11 +16,11 @@ namespace Kosystem.Core
 
         Task RegisterUserAsync(Room room, User user, CancellationToken cancellationToken = default);
 
-        Task UnregisterUserAsync(User user, CancellationToken cancellationToken = default);
+        Task UnregisterUserAsync(Room room, User user, CancellationToken cancellationToken = default);
 
-        Task<bool> EnqueueUserAsync(User user, CancellationToken cancellationToken = default);
+        Task<bool> EnqueueUserAsync(Room room, User user, CancellationToken cancellationToken = default);
 
-        Task<bool> DequeueUserAsync(User user, CancellationToken cancellationToken = default);
+        Task<bool> DequeueUserAsync(Room room, User user, CancellationToken cancellationToken = default);
 
         Task<ICollection<User>> ListIdleInRoomAsync(Room room, CancellationToken cancellationToken = default);
 

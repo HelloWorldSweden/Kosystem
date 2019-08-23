@@ -42,7 +42,7 @@ namespace Kosystem.Data
 
         public async Task UnregisterRoomAsync(Room room, CancellationToken cancellationToken = default)
         {
-            RoomEntity entity = await dbContext.Rooms.FirstOrDefaultAsync(o => o.Id == room.Id);
+            RoomEntity entity = await GetRoomAsync(room, cancellationToken);
 
             if (entity is null)
             {
@@ -58,24 +58,19 @@ namespace Kosystem.Data
             ValidateRoom(room);
             ValidateUser(user);
 
-            var roomEntity = await dbContext.Rooms.FirstOrDefaultAsync(o => o.Id == room.Id, cancellationToken);
+            var roomEntity = await GetRoomAsync(room, cancellationToken);
 
             if (roomEntity is null)
             {
                 throw new InvalidOperationException($"Room with id '{room.Id}' does not exist.");
             }
 
-            var userEntity = await dbContext.Users.FirstOrDefaultAsync(o => o.Id == user.Id, cancellationToken);
-            if (userEntity.RoomId == room.Id)
-            {
-                // Already here yao
-                return;
-            }
+            UserEntity userEntity = await GetUserAsync(room, user, cancellationToken);
 
             // Get or update
             if (userEntity is null)
             {
-                await DequeueUserAsync(user);
+                await DequeueUserAsync(room, user);
 
                 userEntity = new UserEntity
                 {
@@ -88,8 +83,8 @@ namespace Kosystem.Data
             }
             else
             {
-                userEntity.RoomId = roomEntity.Id;
-                userEntity.Room = roomEntity;
+                // Already here yao
+                return;
             }
 
             roomEntity.ChangedAt = DateTimeOffset.Now;
@@ -97,9 +92,9 @@ namespace Kosystem.Data
             await dbContext.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task UnregisterUserAsync(User user, CancellationToken cancellationToken = default)
+        public async Task UnregisterUserAsync(Room room, User user, CancellationToken cancellationToken = default)
         {
-            UserEntity userEntity = await dbContext.Users.FirstOrDefaultAsync(o => o.Id == user.Id, cancellationToken);
+            UserEntity userEntity = await GetUserAsync(room, user, cancellationToken);
             if (userEntity is null)
             {
                 throw new InvalidOperationException($"User with id '{user.Id}' does not exists.");
@@ -109,9 +104,9 @@ namespace Kosystem.Data
             await dbContext.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<bool> EnqueueUserAsync(User user, CancellationToken cancellationToken = default)
+        public async Task<bool> EnqueueUserAsync(Room room, User user, CancellationToken cancellationToken = default)
         {
-            UserEntity userEntity = await dbContext.Users.FirstOrDefaultAsync(o => o.Id == user.Id, cancellationToken);
+            UserEntity userEntity = await GetUserAsync(room, user, cancellationToken);
             if (userEntity is null)
             {
                 throw new InvalidOperationException($"User with id '{user.Id}' does not exists.");
@@ -121,16 +116,16 @@ namespace Kosystem.Data
             {
                 return false;
             }
-            
+
             userEntity.EnqueuedAt = DateTimeOffset.Now;
             await dbContext.SaveChangesAsync(cancellationToken);
 
             return true;
         }
 
-        public async Task<bool> DequeueUserAsync(User user, CancellationToken cancellationToken = default)
+        public async Task<bool> DequeueUserAsync(Room room, User user, CancellationToken cancellationToken = default)
         {
-            UserEntity userEntity = await dbContext.Users.FirstOrDefaultAsync(o => o.Id == user.Id, cancellationToken);
+            UserEntity userEntity = await GetUserAsync(room, user, cancellationToken);
             if (userEntity is null)
             {
                 throw new InvalidOperationException($"User with id '{user.Id}' does not exists.");
@@ -156,12 +151,12 @@ namespace Kosystem.Data
 
             var usersNotInQueue = userEntitiesNotInQueue
                 .Select(o => new User
-            {
-                Id = o.Id,
-                Name = o.Name,
-                CreatedAt = o.CreatedAt,
-                EnqueuedAt = o.EnqueuedAt
-            });
+                {
+                    Id = o.Id,
+                    Name = o.Name,
+                    CreatedAt = o.CreatedAt,
+                    EnqueuedAt = o.EnqueuedAt
+                });
 
             return await usersNotInQueue.ToArrayAsync(cancellationToken);
         }
@@ -205,15 +200,25 @@ namespace Kosystem.Data
                         .Where(u => u.EnqueuedAt != null)
                         .OrderBy(u => u.EnqueuedAt)
                         .Select(u => new User
-                    {
-                        Id = u.Id,
-                        Name = u.Name,
-                        CreatedAt = u.CreatedAt,
-                        EnqueuedAt = u.EnqueuedAt
-                    }).ToArray()
+                        {
+                            Id = u.Id,
+                            Name = u.Name,
+                            CreatedAt = u.CreatedAt,
+                            EnqueuedAt = u.EnqueuedAt
+                        }).ToArray()
                 });
 
             return await rooms.ToListAsync(cancellationToken);
+        }
+
+        private Task<RoomEntity> GetRoomAsync(Room room, CancellationToken cancellationToken = default)
+        {
+            return dbContext.Rooms.FirstOrDefaultAsync(o => o.Id == room.Id, cancellationToken);
+        }
+
+        private Task<UserEntity> GetUserAsync(Room room, User user, CancellationToken cancellationToken = default)
+        {
+            return dbContext.Users.FirstOrDefaultAsync(o => o.Id == user.Id && o.RoomId == room.Id, cancellationToken);
         }
 
         private void ValidateRoom(Room room)
