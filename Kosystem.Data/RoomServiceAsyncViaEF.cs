@@ -195,17 +195,7 @@ namespace Kosystem.Data
                         Name = u.Name,
                         CreatedAt = u.CreatedAt,
                         EnqueuedAt = u.EnqueuedAt
-                    }).ToArray(),
-                    Queue = o.Users
-                        .Where(u => u.EnqueuedAt != null)
-                        .OrderBy(u => u.EnqueuedAt)
-                        .Select(u => new User
-                        {
-                            Id = u.Id,
-                            Name = u.Name,
-                            CreatedAt = u.CreatedAt,
-                            EnqueuedAt = u.EnqueuedAt
-                        }).ToArray()
+                    }).ToArray()
                 });
 
             return await rooms.ToListAsync(cancellationToken);

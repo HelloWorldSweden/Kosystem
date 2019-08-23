@@ -15,7 +15,11 @@
     <li>
         <fieldset>
             <legend>@room.Name - <i>@room.Users.Count st i rummet</i></legend>
-            @if (room.Queue.Count == 0)
+            @{ 
+                var enqueued = room.GetSortedEnqueued();
+                var unqueued = room.Users.Except(enqueued).ToList();
+            }
+            @if (enqueued.Count == 0)
             {
                 <i>(Finns inga i kö...)</i>
             }
@@ -23,7 +27,21 @@
             {
                 <text>Kö:</text>
                 <ol>
-                    @foreach (var user in room.Queue)
+                    @foreach (var user in enqueued)
+                    {
+                        <li>
+                            @user.Name
+                        </li>
+                    }
+                </ol>
+            }
+
+            @if (unqueued.Count > 0)
+            {
+                <text>Inte i kö:</text>
+                <ol>
+                    
+                    @foreach (var user in unqueued)
                     {
                         <li>
                             @user.Name

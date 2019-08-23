@@ -16,7 +16,7 @@ namespace Kosystem.Web.Controllers
             this.roomService = roomService;
         }
 
-        public async Task<IActionResult> IndexAsync()
+        public async Task<IActionResult> Index()
         {
             var rooms = await roomService.ListRoomsAsync();
             return View(rooms);
