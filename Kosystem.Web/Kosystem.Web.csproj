@@ -9,6 +9,9 @@
 
   <ItemGroup>
     <None Remove="src\index.ts" />
+    <None Remove="src\react-app.tsx" />
+    <None Remove="src\react-app\app.tsx" />
+    <None Remove="src\react-app\login.tsx" />
   </ItemGroup>
 
 
