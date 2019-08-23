@@ -1,8 +1,11 @@
+using Kosystem.Core;
+using Kosystem.Data;
 using Kosystem.Web.Hubs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -29,6 +32,11 @@ namespace Kosystem.Web
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddSignalR();
+
+            services.AddDbContext<RoomDbContext>(o => {
+                o.UseSqlServer(Configuration.GetConnectionString("RoomService"));
+            });
+            services.AddTransient<IRoomService, RoomServiceAsyncViaEF>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
