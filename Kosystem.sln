@@ -3,7 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29215.179
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kosystem.Web", "Kosystem.Web\Kosystem.Web.csproj", "{1E009D34-579A-4A28-A4E4-667B7F2151AA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kosystem.Web", "Kosystem.Web\Kosystem.Web.csproj", "{1E009D34-579A-4A28-A4E4-667B7F2151AA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kosystem.Data", "Kosystem.Data\Kosystem.Data.csproj", "{1C4BCDBD-4065-4497-B550-B31FD645EAA0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kosystem.Core", "Kosystem.Core\Kosystem.Core.csproj", "{71F248C1-548A-43F2-BA20-A4A761FED999}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kosystem.Common", "Kosystem.Common\Kosystem.Common.csproj", "{A16CAB94-2394-478F-A4EA-3F44FB47D86B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +21,18 @@ Global
 		{1E009D34-579A-4A28-A4E4-667B7F2151AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1E009D34-579A-4A28-A4E4-667B7F2151AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1E009D34-579A-4A28-A4E4-667B7F2151AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C4BCDBD-4065-4497-B550-B31FD645EAA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C4BCDBD-4065-4497-B550-B31FD645EAA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C4BCDBD-4065-4497-B550-B31FD645EAA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C4BCDBD-4065-4497-B550-B31FD645EAA0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71F248C1-548A-43F2-BA20-A4A761FED999}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71F248C1-548A-43F2-BA20-A4A761FED999}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71F248C1-548A-43F2-BA20-A4A761FED999}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71F248C1-548A-43F2-BA20-A4A761FED999}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A16CAB94-2394-478F-A4EA-3F44FB47D86B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A16CAB94-2394-478F-A4EA-3F44FB47D86B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A16CAB94-2394-478F-A4EA-3F44FB47D86B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A16CAB94-2394-478F-A4EA-3F44FB47D86B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
