@@ -15,5 +15,9 @@ namespace Kosystem.Common
             users.Sort((a, b) => a.EnqueuedAt.Value.CompareTo(b.EnqueuedAt.Value));
             return users;
         }
+        public static List<User> GetUnqueued(this Room room)
+        {
+            return room.Users.Where(o => !o.EnqueuedAt.HasValue).ToList();
+        }
     }
 }

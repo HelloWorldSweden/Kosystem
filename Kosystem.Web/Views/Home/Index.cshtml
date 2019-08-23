@@ -17,7 +17,7 @@
             <legend>@room.Name - <i>@room.Users.Count st i rummet</i></legend>
             @{ 
                 var enqueued = room.GetSortedEnqueued();
-                var unqueued = room.Users.Except(enqueued).ToList();
+                var unqueued = room.GetUnqueued();
             }
             @if (enqueued.Count == 0)
             {
