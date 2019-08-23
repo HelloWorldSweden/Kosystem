@@ -10,6 +10,6 @@ namespace Kosystem.Core
 
         public DateTimeOffset CreatedAt { get; set; }
 
-        public DateTimeOffset? ChangedAt { get; set; }
+        public DateTimeOffset? EnqueuedAt { get; set; }
     }
 }

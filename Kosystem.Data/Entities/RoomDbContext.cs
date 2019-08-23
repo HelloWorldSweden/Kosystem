@@ -24,10 +24,10 @@ namespace Kosystem.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<UserInQueueEntity>().HasKey(table => new
+            builder.Entity<UserEntity>().HasKey(table => new
             {
+                table.Id,
                 table.RoomId,
-                table.UserId
             });
         }
 

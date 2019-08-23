@@ -22,8 +22,6 @@ namespace Kosystem.Data.Entities
 
         public virtual DbSet<UserEntity> Users { get; set; }
 
-        public virtual DbSet<UserInQueueEntity> Queue { get; set; }
-
         [Required]
         public DateTimeOffset CreatedAt { get; set; }
 

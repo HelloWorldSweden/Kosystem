@@ -7,7 +7,6 @@ namespace Kosystem.Data.Entities
 {
     public class UserEntity
     {
-        [Key]
         [StringLength(Id_MAX_LENGTH)]
         public string Id { get; set; }
         public const int Id_MAX_LENGTH = 128;
@@ -26,6 +25,6 @@ namespace Kosystem.Data.Entities
 
         public DateTimeOffset CreatedAt { get; set; }
 
-        public DateTimeOffset? ChangedAt { get; set; }
+        public DateTimeOffset? EnqueuedAt { get; set; }
     }
 }

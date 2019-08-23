@@ -90,7 +90,6 @@ namespace Kosystem.Data
             {
                 userEntity.RoomId = roomEntity.Id;
                 userEntity.Room = roomEntity;
-                userEntity.ChangedAt = DateTimeOffset.Now;
             }
 
             roomEntity.ChangedAt = DateTimeOffset.Now;
@@ -118,28 +117,12 @@ namespace Kosystem.Data
                 throw new InvalidOperationException($"User with id '{user.Id}' does not exists.");
             }
 
-            RoomEntity roomEntity = await dbContext.Rooms
-                .Include(o => o.Queue)
-                .FirstOrDefaultAsync(o => o.Id == userEntity.RoomId, cancellationToken);
-
-            if (roomEntity is null)
-            {
-                throw new InvalidOperationException($"User's room does not exist. Removed in parallel?");
-            }
-
-            if (await roomEntity.Queue.AnyAsync(o => o.UserId == userEntity.Id, cancellationToken))
+            if (userEntity.EnqueuedAt.HasValue)
             {
                 return false;
             }
-
-            await roomEntity.Queue.AddAsync(new UserInQueueEntity
-            {
-                Room = roomEntity,
-                RoomId = roomEntity.Id,
-                User = userEntity,
-                UserId = userEntity.Id,
-            }, cancellationToken);
-
+            
+            userEntity.EnqueuedAt = DateTimeOffset.Now;
             await dbContext.SaveChangesAsync(cancellationToken);
 
             return true;
@@ -153,22 +136,12 @@ namespace Kosystem.Data
                 throw new InvalidOperationException($"User with id '{user.Id}' does not exists.");
             }
 
-            RoomEntity roomEntity = await dbContext.Rooms
-                .Include(o => o.Queue)
-                .FirstOrDefaultAsync(o => o.Id == userEntity.RoomId, cancellationToken);
-
-            if (roomEntity is null)
-            {
-                throw new InvalidOperationException($"User's room does not exist. Removed in parallel?");
-            }
-
-            var userInQueue = await roomEntity.Queue.FirstOrDefaultAsync(o => o.UserId == userEntity.Id, cancellationToken);
-            if (userInQueue is null)
+            if (!userEntity.EnqueuedAt.HasValue)
             {
                 return false;
             }
 
-            roomEntity.Queue.Remove(userInQueue);
+            userEntity.EnqueuedAt = null;
             await dbContext.SaveChangesAsync(cancellationToken);
 
             return true;
@@ -176,24 +149,18 @@ namespace Kosystem.Data
 
         public async Task<ICollection<User>> ListIdleInRoomAsync(Room room, CancellationToken cancellationToken = default)
         {
-            var usersInRoom = dbContext.Rooms
+            var userEntitiesNotInQueue = dbContext.Rooms
                 .Where(o => o.Id == room.Id)
-                .SelectMany(o => o.Users);
+                .SelectMany(o => o.Users)
+                .Where(o => !o.EnqueuedAt.HasValue);
 
-            var usersInQueue = dbContext.Rooms
-                .Include(o => o.Queue).ThenInclude(o => o.User)
-                .Where(o => o.Id == room.Id)
-                .SelectMany(o => o.Queue)
-                .Select(o => o.User);
-
-            var usersNotInQueue = usersInRoom
-                .Except(usersInQueue)
+            var usersNotInQueue = userEntitiesNotInQueue
                 .Select(o => new User
             {
                 Id = o.Id,
                 Name = o.Name,
                 CreatedAt = o.CreatedAt,
-                ChangedAt = o.ChangedAt
+                EnqueuedAt = o.EnqueuedAt
             });
 
             return await usersNotInQueue.ToArrayAsync(cancellationToken);
@@ -202,17 +169,16 @@ namespace Kosystem.Data
         public async Task<IList<User>> ListQueueInRoomAsync(Room room, CancellationToken cancellationToken = default)
         {
             var userEntitiesInQueue = dbContext.Rooms
-                .Include(o => o.Queue).ThenInclude(o => o.User)
                 .Where(o => o.Id == room.Id)
-                .SelectMany(o => o.Queue)
-                .Select(o => o.User);
+                .SelectMany(o => o.Users)
+                .Where(o => o.EnqueuedAt.HasValue);
 
             var usersInQueue = userEntitiesInQueue.Select(o => new User
             {
                 Id = o.Id,
                 Name = o.Name,
                 CreatedAt = o.CreatedAt,
-                ChangedAt = o.ChangedAt
+                EnqueuedAt = o.EnqueuedAt
             });
 
             return await usersInQueue.ToArrayAsync(cancellationToken);
@@ -222,7 +188,6 @@ namespace Kosystem.Data
         {
             var rooms = dbContext.Rooms
                 .Include(o => o.Users)
-                .Include(o => o.Queue).ThenInclude(o => o.User)
                 .Select(o => new Room
                 {
                     Id = o.Id,
@@ -234,14 +199,17 @@ namespace Kosystem.Data
                         Id = u.Id,
                         Name = u.Name,
                         CreatedAt = u.CreatedAt,
-                        ChangedAt = u.ChangedAt
+                        EnqueuedAt = u.EnqueuedAt
                     }).ToArray(),
-                    Queue = o.Queue.Select(q => q.User).Select(u => new User
+                    Queue = o.Users
+                        .Where(u => u.EnqueuedAt != null)
+                        .OrderBy(u => u.EnqueuedAt)
+                        .Select(u => new User
                     {
                         Id = u.Id,
                         Name = u.Name,
                         CreatedAt = u.CreatedAt,
-                        ChangedAt = u.ChangedAt
+                        EnqueuedAt = u.EnqueuedAt
                     }).ToArray()
                 });
 
