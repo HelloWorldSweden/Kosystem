@@ -1,6 +1,8 @@
 ﻿@model IList<Room>
 @{
     ViewData["Title"] = "Index";
+
+    var now = DateTimeOffset.UtcNow;
 }
 
 <h1>Index</h1>
@@ -30,7 +32,7 @@
                     @foreach (var user in enqueued)
                     {
                         <li>
-                            @user.Name
+                            @user.Name, köat i @((int)(now - user.EnqueuedAt.Value).TotalSeconds) sekunder
                         </li>
                     }
                 </ol>
