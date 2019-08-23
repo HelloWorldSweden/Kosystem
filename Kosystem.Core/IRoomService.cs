@@ -1,30 +1,15 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Kosystem.Core
 {
-    public interface IRoomRepository
-    {
-        void RegisterRoom(Room room);
-
-        void UnregisterRoom(Room room);
-
-        void RegisterUser(Room room, User user);
-
-        void UnregisterUser(Room room);
-
-        bool EnqueueUser(Room room);
-
-        bool DequeueUser(Room room);
-
-        ICollection<User> ListIdleInRoom(Room room);
-
-        IList<User> ListQueueInRoom(Room room);
-    }
     public interface IRoomService
     {
+        Task<IList<Room>> ListRoomsAsync(CancellationToken cancellationToken = default);
+
         Task RegisterRoomAsync(Room room, CancellationToken cancellationToken = default);
 
         Task UnregisterRoomAsync(Room room, CancellationToken cancellationToken = default);

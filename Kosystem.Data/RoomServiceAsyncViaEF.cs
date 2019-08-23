@@ -218,6 +218,36 @@ namespace Kosystem.Data
             return await usersInQueue.ToArrayAsync(cancellationToken);
         }
 
+        public async Task<IList<Room>> ListRoomsAsync(CancellationToken cancellationToken = default)
+        {
+            var rooms = dbContext.Rooms
+                .Include(o => o.Users)
+                .Include(o => o.Queue).ThenInclude(o => o.User)
+                .Select(o => new Room
+                {
+                    Id = o.Id,
+                    Name = o.Name,
+                    CreatedAt = o.CreatedAt,
+                    ChangedAt = o.ChangedAt,
+                    Users = o.Users.Select(u => new User
+                    {
+                        Id = u.Id,
+                        Name = u.Name,
+                        CreatedAt = u.CreatedAt,
+                        ChangedAt = u.ChangedAt
+                    }).ToArray(),
+                    Queue = o.Queue.Select(q => q.User).Select(u => new User
+                    {
+                        Id = u.Id,
+                        Name = u.Name,
+                        CreatedAt = u.CreatedAt,
+                        ChangedAt = u.ChangedAt
+                    }).ToArray()
+                });
+
+            return await rooms.ToListAsync(cancellationToken);
+        }
+
         private void ValidateRoom(Room room)
         {
             if (room.Id.IsValidIdentifier())
