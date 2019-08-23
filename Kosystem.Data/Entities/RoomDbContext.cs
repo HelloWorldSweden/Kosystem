@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Kosystem.Data
 {
-    public abstract class RoomDbContext : DbContext
+    public class RoomDbContext : DbContext
     {
         public DbSet<UserEntity> Users { get; set; }
 
@@ -19,11 +19,6 @@ namespace Kosystem.Data
 
         public RoomDbContext(DbContextOptions options)
             : base(options)
-        {
-        }
-
-        public RoomDbContext()
-            : base()
         {
         }
 
