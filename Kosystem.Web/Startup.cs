@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 
 namespace Kosystem.Web
 {
@@ -33,8 +34,9 @@ namespace Kosystem.Web
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddSignalR();
 
+            
             services.AddDbContext<RoomDbContext>(o => {
-                o.UseSqlServer(Configuration.GetConnectionString("RoomService"));
+                o.UseSqlServer(Configuration.GetConnectionString("RoomService"), b => b.MigrationsAssembly(typeof(Startup).Assembly.GetName().Name));
             });
             services.AddTransient<IRoomService, RoomServiceAsyncViaEF>();
         }
