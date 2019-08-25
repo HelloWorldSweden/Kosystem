@@ -11,9 +11,7 @@ namespace Kosystem.Data.Entities
     {
         [Key]
         [Required]
-        [StringLength(Id_MAX_LENGTH)]
-        public string Id { get; set; }
-        public const int Id_MAX_LENGTH = 128;
+        public Guid Id { get; set; }
 
         [Required]
         [StringLength(Name_MAX_LENGTH)]

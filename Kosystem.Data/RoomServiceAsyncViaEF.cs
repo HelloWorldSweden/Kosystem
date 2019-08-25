@@ -1,5 +1,6 @@
 ﻿using Kosystem.Common;
 using Kosystem.Core;
+using Kosystem.Core.DTO;
 using Kosystem.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -20,24 +21,19 @@ namespace Kosystem.Data
             this.dbContext = dbContext;
         }
 
-        public async Task RegisterRoomAsync(Room room, CancellationToken cancellationToken = default)
+        public async Task<Guid> RegisterRoomAsync(RoomCreationDTO room, CancellationToken cancellationToken = default)
         {
-            ValidateRoom(room);
-
-            if (await dbContext.Rooms.AnyAsync(a => a.Id == room.Id, cancellationToken))
-            {
-                throw new InvalidOperationException($"Room with id '{room.Id}' already exists.");
-            }
-
             var entity = new RoomEntity
             {
-                Id = room.Id,
+                Id = Guid.NewGuid(),
                 Name = room.Name,
                 CreatedAt = DateTimeOffset.Now
             };
 
             await dbContext.Rooms.AddAsync(entity, cancellationToken);
             await dbContext.SaveChangesAsync(cancellationToken);
+
+            return entity.Id;
         }
 
         public async Task UnregisterRoomAsync(Room room, CancellationToken cancellationToken = default)
@@ -53,43 +49,28 @@ namespace Kosystem.Data
             await dbContext.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task RegisterUserAsync(Room room, User user, CancellationToken cancellationToken = default)
+        public async Task<Guid> RegisterUserAsync(UserCreationDTO user, CancellationToken cancellationToken = default)
         {
-            ValidateRoom(room);
-            ValidateUser(user);
-
-            var roomEntity = await GetRoomAsync(room, cancellationToken);
+            var roomEntity = await GetRoomByIdAsync(user.RoomId, cancellationToken);
 
             if (roomEntity is null)
             {
-                throw new InvalidOperationException($"Room with id '{room.Id}' does not exist.");
+                throw new InvalidOperationException($"Room with id '{user.RoomId}' does not exist.");
             }
 
-            UserEntity userEntity = await GetUserAsync(room, user, cancellationToken);
-
-            // Get or update
-            if (userEntity is null)
+            var userEntity = new UserEntity
             {
-                await DequeueUserAsync(room, user);
-
-                userEntity = new UserEntity
-                {
-                    Id = room.Id,
-                    Name = room.Name,
-                    CreatedAt = DateTimeOffset.Now,
-                    RoomId = roomEntity.Id,
-                    Room = roomEntity
-                };
-            }
-            else
-            {
-                // Already here yao
-                return;
-            }
+                Id = Guid.NewGuid(),
+                Name = user.Name,
+                CreatedAt = DateTimeOffset.Now,
+                RoomId = roomEntity.Id
+            };
 
             roomEntity.ChangedAt = DateTimeOffset.Now;
             await dbContext.Users.AddAsync(userEntity, cancellationToken);
             await dbContext.SaveChangesAsync(cancellationToken);
+
+            return userEntity.Id;
         }
 
         public async Task UnregisterUserAsync(Room room, User user, CancellationToken cancellationToken = default)
@@ -211,53 +192,7 @@ namespace Kosystem.Data
             return dbContext.Users.FirstOrDefaultAsync(o => o.Id == user.Id && o.RoomId == room.Id, cancellationToken);
         }
 
-        private void ValidateRoom(Room room)
-        {
-            if (room.Id.IsValidIdentifier())
-            {
-                throw new ArgumentException($"Room property {nameof(Room.Id)} is not a valid identifier: '{room.Id}'", nameof(room));
-            }
-
-            if (room.Id.Length > RoomEntity.Id_MAX_LENGTH)
-            {
-                throw new ArgumentException($"Room property {nameof(Room.Id)} is too long, max is {RoomEntity.Id_MAX_LENGTH}, but got {room.Id.Length}.", nameof(room));
-            }
-
-            if (string.IsNullOrEmpty(room.Name))
-            {
-                throw new ArgumentException($"Room property {nameof(Room.Name)} is required.", nameof(room));
-            }
-
-            if (room.Name.Length > RoomEntity.Name_MAX_LENGTH)
-            {
-                throw new ArgumentException($"Room property {nameof(Room.Name)} is too long, max is {RoomEntity.Name_MAX_LENGTH}, but got {room.Name.Length}.", nameof(room));
-            }
-        }
-
-        private void ValidateUser(User user)
-        {
-            if (user.Id.IsValidIdentifier())
-            {
-                throw new ArgumentException($"User property {nameof(User.Id)} is not a valid identifier: '{user.Id}'", nameof(user));
-            }
-
-            if (user.Id.Length > UserEntity.Id_MAX_LENGTH)
-            {
-                throw new ArgumentException($"User property {nameof(User.Id)} is too long, max is {UserEntity.Id_MAX_LENGTH}, but got {user.Id.Length}.", nameof(user));
-            }
-
-            if (string.IsNullOrEmpty(user.Name))
-            {
-                throw new ArgumentException($"User property {nameof(User.Name)} is required.", nameof(user));
-            }
-
-            if (user.Name.Length > UserEntity.Name_MAX_LENGTH)
-            {
-                throw new ArgumentException($"User property {nameof(User.Name)} is too long, max is {UserEntity.Name_MAX_LENGTH}, but got {user.Name.Length}.", nameof(user));
-            }
-        }
-
-        public async Task<Room> GetRoomByIdAsync(string roomId, CancellationToken cancellationToken = default)
+        public async Task<Room> GetRoomByIdAsync(Guid roomId, CancellationToken cancellationToken = default)
         {
             var roomEntity = await dbContext.Rooms
                 .FirstOrDefaultAsync(o => o.Id == roomId, cancellationToken);
@@ -283,7 +218,7 @@ namespace Kosystem.Data
             };
         }
 
-        public async Task<User> GetUserByIdAsync(Room room, string userId, CancellationToken cancellationToken = default)
+        public async Task<User> GetUserByIdAsync(Room room, Guid userId, CancellationToken cancellationToken = default)
         {
             var userEntity = await dbContext.Users
                 .FirstOrDefaultAsync(o => o.Id == userId && o.RoomId == room.Id, cancellationToken);

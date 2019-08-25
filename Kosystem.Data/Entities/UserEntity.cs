@@ -7,9 +7,7 @@ namespace Kosystem.Data.Entities
 {
     public class UserEntity
     {
-        [StringLength(Id_MAX_LENGTH)]
-        public string Id { get; set; }
-        public const int Id_MAX_LENGTH = 128;
+        public Guid Id { get; set; }
 
         [Required]
         [StringLength(Name_MAX_LENGTH)]
@@ -21,7 +19,7 @@ namespace Kosystem.Data.Entities
         public virtual RoomEntity Room { get; set; }
 
         [Required]
-        public string RoomId { get; set; }
+        public Guid RoomId { get; set; }
 
         public DateTimeOffset CreatedAt { get; set; }
 

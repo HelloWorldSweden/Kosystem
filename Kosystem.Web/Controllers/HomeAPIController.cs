@@ -1,4 +1,5 @@
 ﻿using Kosystem.Core;
+using Kosystem.Core.DTO;
 using Kosystem.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -32,22 +33,17 @@ namespace Kosystem.Web.Controllers
                 return ModelStateError();
             }
 
-            User user = await roomService.GetUserByIdAsync(room, model.UserId);
-            if (user != null)
+            var user = new UserCreationDTO
             {
-                ModelState.AddModelError(nameof(model.UserId), $"User already joined room.");
-                return ModelStateError();
-            } else
-            {
-                user = new User
-                {
-                    Id = model.UserId,
-                    Name = model.UserName
-                };
-            }
+                Name = model.UserName,
+                RoomId = model.RoomId
+            };
 
-            await roomService.RegisterUserAsync(room, user);
-            return Success();
+            var userId = await roomService.RegisterUserAsync(user);
+            return Success(data: new
+            {
+                userId
+            });
         }
 
         private JsonResult ModelStateError()
@@ -65,6 +61,15 @@ namespace Kosystem.Web.Controllers
             return new JsonResult(new
             {
                 success = true
+            });
+        }
+
+        private JsonResult Success(object data)
+        {
+            return new JsonResult(new
+            {
+                success = true,
+                data,
             });
         }
     }
