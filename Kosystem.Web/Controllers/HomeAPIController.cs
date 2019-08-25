@@ -1,76 +1,110 @@
 ﻿using Kosystem.Core;
 using Kosystem.Core.DTO;
 using Kosystem.Web.ViewModels;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using System;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Kosystem.Web.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1")]
     [ApiController]
     public class HomeAPIController : ControllerBase
     {
         private readonly IRoomService roomService;
+        private readonly IHostingEnvironment environment;
 
-        public HomeAPIController(IRoomService roomService)
+        public HomeAPIController(IRoomService roomService, IHostingEnvironment environment)
         {
             this.roomService = roomService;
+            this.environment = environment;
         }
 
-        public async Task<JsonResult> JoinRoom(LoginViewModel model)
+        [HttpPost("user")]
+        public async Task<IActionResult> JoinRoom([FromForm] LoginViewModel model)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return ModelStateError();
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelStateErrorData());
+                }
+
+                Room room = await roomService.GetRoomByIdAsync(model.RoomId);
+                if (room == null)
+                {
+                    ModelState.AddModelError(nameof(model.RoomId), $"Room does not exist.");
+                    return BadRequest(ModelStateErrorData());
+                }
+
+                var user = new UserCreationDTO
+                {
+                    Name = model.UserName,
+                    RoomId = model.RoomId
+                };
+
+                var userId = await roomService.RegisterUserAsync(user);
+                return Ok(SuccessData(data: new
+                {
+                    userId
+                }));
             }
-
-            Room room = await roomService.GetRoomByIdAsync(model.RoomId);
-            if (room == null)
+            catch (Exception e)
             {
-                ModelState.AddModelError(nameof(model.RoomId), $"Room does not exist.");
-                return ModelStateError();
+                return StatusCode((int)HttpStatusCode.InternalServerError, ExceptionData(e));
             }
-
-            var user = new UserCreationDTO
-            {
-                Name = model.UserName,
-                RoomId = model.RoomId
-            };
-
-            var userId = await roomService.RegisterUserAsync(user);
-            return Success(data: new
-            {
-                userId
-            });
         }
 
-        private JsonResult ModelStateError()
+        private object ModelStateErrorData()
         {
-            return new JsonResult(new
+            return new
             {
                 success = false,
                 error = "Validation error of model",
                 errors = ModelState.Values.SelectMany(o => o.Errors).Select(o => o.ErrorMessage).ToArray()
-            });
+            };
         }
 
-        private JsonResult Success()
+        private object ExceptionData(Exception ex)
         {
-            return new JsonResult(new
+            if (environment.IsDevelopment())
+            {
+                return new
+                {
+                    success = false,
+                    error = ex.Message,
+                    stacktrace = ex.StackTrace,
+                    innerError = ex.InnerException?.Message,
+                };
+            } else
+            {
+                return new
+                {
+                    success = false,
+                    error = "Internal server error.",
+                };
+            }
+        }
+
+        private object SuccessData()
+        {
+            return new
             {
                 success = true
-            });
+            };
         }
 
-        private JsonResult Success(object data)
+        private object SuccessData(object data)
         {
-            return new JsonResult(new
+            return new
             {
                 success = true,
                 data,
-            });
+            };
         }
     }
 }

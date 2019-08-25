@@ -18,7 +18,7 @@ namespace Kosystem.Data.Entities
         public string Name { get; set; }
         public const int Name_MAX_LENGTH = 128;
 
-        public virtual DbSet<UserEntity> Users { get; set; }
+        public virtual IList<UserEntity> Users { get; set; }
 
         [Required]
         public DateTimeOffset CreatedAt { get; set; }

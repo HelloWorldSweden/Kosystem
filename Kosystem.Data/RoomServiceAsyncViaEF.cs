@@ -195,6 +195,7 @@ namespace Kosystem.Data
         public async Task<Room> GetRoomByIdAsync(Guid roomId, CancellationToken cancellationToken = default)
         {
             var roomEntity = await dbContext.Rooms
+                .Include(o => o.Users)
                 .FirstOrDefaultAsync(o => o.Id == roomId, cancellationToken);
 
             if (roomEntity == null)
