@@ -256,5 +256,50 @@ namespace Kosystem.Data
                 throw new ArgumentException($"User property {nameof(User.Name)} is too long, max is {UserEntity.Name_MAX_LENGTH}, but got {user.Name.Length}.", nameof(user));
             }
         }
+
+        public async Task<Room> GetRoomByIdAsync(string roomId, CancellationToken cancellationToken = default)
+        {
+            var roomEntity = await dbContext.Rooms
+                .FirstOrDefaultAsync(o => o.Id == roomId, cancellationToken);
+
+            if (roomEntity == null)
+            {
+                return null;
+            }
+
+            return new Room
+            {
+                Id = roomEntity.Id,
+                Name = roomEntity.Name,
+                CreatedAt = roomEntity.CreatedAt,
+                ChangedAt = roomEntity.ChangedAt,
+                Users = roomEntity.Users.Select(u => new User
+                {
+                    Id = u.Id,
+                    Name = u.Name,
+                    CreatedAt = u.CreatedAt,
+                    EnqueuedAt = u.EnqueuedAt
+                }).ToArray()
+            };
+        }
+
+        public async Task<User> GetUserByIdAsync(Room room, string userId, CancellationToken cancellationToken = default)
+        {
+            var userEntity = await dbContext.Users
+                .FirstOrDefaultAsync(o => o.Id == userId && o.RoomId == room.Id, cancellationToken);
+
+            if (userEntity == null)
+            {
+                return null;
+            }
+
+            return new User
+            {
+                Id = userEntity.Id,
+                Name = userEntity.Name,
+                CreatedAt = userEntity.CreatedAt,
+                EnqueuedAt = userEntity.EnqueuedAt
+            };
+        }
     }
 }

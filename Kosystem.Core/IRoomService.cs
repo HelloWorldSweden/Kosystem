@@ -8,6 +8,9 @@ namespace Kosystem.Core
 {
     public interface IRoomService
     {
+        Task<Room> GetRoomByIdAsync(string roomId, CancellationToken cancellationToken = default);
+        Task<User> GetUserByIdAsync(Room room, string userId, CancellationToken cancellationToken = default);
+
         Task<IList<Room>> ListRoomsAsync(CancellationToken cancellationToken = default);
 
         Task RegisterRoomAsync(Room room, CancellationToken cancellationToken = default);

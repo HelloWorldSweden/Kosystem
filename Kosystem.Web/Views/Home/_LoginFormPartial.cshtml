@@ -1,0 +1,24 @@
+﻿@model LoginViewModel
+@inject IRoomService RoomService
+
+@{
+    var rooms = await RoomService.ListRoomsAsync();
+}
+
+    <form id="loginForm" method="post">
+        <div>
+            <span asp-validation-for="UserName" style="display:block"></span>
+            <label asp-for="UserName"></label>
+            <input asp-for="UserName" />
+        </div>
+        <div>
+            @foreach (var room in rooms)
+            {
+                <button type="submit" name="@Html.NameFor(m => m.RoomId)" value="@room.Id">Delta rum @room.Name</button>
+            }
+            @if(rooms.Count == 0)
+            {
+                <div><i>Det finns inga rum.</i></div>
+            }
+        </div>
+    </form>

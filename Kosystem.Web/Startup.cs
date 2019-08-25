@@ -14,12 +14,14 @@ namespace Kosystem.Web
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IHostingEnvironment environment)
         {
             Configuration = configuration;
+            Environment = environment;
         }
 
         public IConfiguration Configuration { get; }
+        public IHostingEnvironment Environment { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -32,7 +34,10 @@ namespace Kosystem.Web
             });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-            services.AddSignalR();
+            services.AddSignalR(config =>
+            {
+                config.EnableDetailedErrors = Environment.IsDevelopment();
+            });
 
             services.AddDbContext<RoomDbContext>(o => {
                 o.UseSqlServer(Configuration.GetConnectionString("RoomService"), b => b.MigrationsAssembly(typeof(Startup).Assembly.GetName().Name));
@@ -63,6 +68,7 @@ namespace Kosystem.Web
             app.UseSignalR(routes =>
             {
                 routes.MapHub<ChatHub>("/chathub");
+                routes.MapHub<KoHub>("/kohub");
             });
         }
     }

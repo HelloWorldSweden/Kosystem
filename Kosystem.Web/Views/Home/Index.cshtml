@@ -5,52 +5,72 @@
     var now = DateTimeOffset.UtcNow;
 }
 
-<h1>Index</h1>
+<partial name="_LoginFormPartial" model="@new LoginViewModel()" />
 
-@if (Model.Count == 0)
-{
-    <i>(Finns inga rum...)</i>
-}
+@*
+    <h1>Index</h1>
 
-@foreach (var room in Model)
-{
-    <li>
-        <fieldset>
-            <legend>@room.Name - <i>@room.Users.Count st i rummet</i></legend>
-            @{ 
-                var enqueued = room.GetSortedEnqueued();
-                var unqueued = room.GetUnqueued();
-            }
-            @if (enqueued.Count == 0)
-            {
-                <i>(Finns inga i kö...)</i>
-            }
-            else
-            {
-                <text>Kö:</text>
-                <ol>
-                    @foreach (var user in enqueued)
-                    {
-                        <li>
-                            @user.Name, köat i @((int)(now - user.EnqueuedAt.Value).TotalSeconds) sekunder
-                        </li>
-                    }
-                </ol>
-            }
+    @if (Model.Count == 0)
+    {
+        <i>(Finns inga rum...)</i>
+    }
 
-            @if (unqueued.Count > 0)
-            {
-                <text>Inte i kö:</text>
-                <ol>
-                    
-                    @foreach (var user in unqueued)
-                    {
-                        <li>
-                            @user.Name
-                        </li>
-                    }
-                </ol>
-            }
-        </fieldset>
-    </li>
+    @foreach (var room in Model)
+    {
+        <li>
+            <fieldset>
+                <legend>@room.Name - <i>@room.Users.Count st i rummet</i></legend>
+                @{
+                    var enqueued = room.GetSortedEnqueued();
+                    var unqueued = room.GetUnqueued();
+                }
+                @if (enqueued.Count == 0)
+                {
+                    <i>(Finns inga i kö...)</i>
+                }
+                else
+                {
+                    <text>Kö:</text>
+                    <ol>
+                        @foreach (var user in enqueued)
+                        {
+                            <li>
+                                @user.Name, köat i @((int)(now - user.EnqueuedAt.Value).TotalSeconds) sekunder
+                            </li>
+                        }
+                    </ol>
+                }
+
+                @if (unqueued.Count > 0)
+                {
+                    <text>Inte i kö:</text>
+                    <ol>
+
+                        @foreach (var user in unqueued)
+                        {
+                            <li>
+                                @user.Name
+                            </li>
+                        }
+                    </ol>
+                }
+            </fieldset>
+        </li>
+    }*@
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <environment include="Development">
+        <script src="~/lib/signalr/signalr.js"></script>
+        <script src="~/js/main.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/aspnet-signalr/1.1.4/signalr.min.js"
+                integrity="sha256-LeAW7V38b1z8nHHlrckbnAfx5W4Ge57nDlsDz6GzJjc="
+                crossorigin="anonymous"
+                asp-fallback-src="~/lib/signalr/signalr.min.js"
+                asp-fallback-test="signalR"></script>
+        <script src="~/js/main.js"></script>
+    </environment>
 }
