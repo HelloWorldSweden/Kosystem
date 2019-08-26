@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kosystem.Data", "Kosystem.D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kosystem.Core", "Kosystem.Core\Kosystem.Core.csproj", "{71F248C1-548A-43F2-BA20-A4A761FED999}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kosystem.Common", "Kosystem.Common\Kosystem.Common.csproj", "{A16CAB94-2394-478F-A4EA-3F44FB47D86B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kosystem.Common", "Kosystem.Common\Kosystem.Common.csproj", "{A16CAB94-2394-478F-A4EA-3F44FB47D86B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kosystem.Data.Tests", "Kosystem.Data.Tests\Kosystem.Data.Tests.csproj", "{B488612A-9EA7-4AD1-B7F2-025B66112C63}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{A16CAB94-2394-478F-A4EA-3F44FB47D86B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A16CAB94-2394-478F-A4EA-3F44FB47D86B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A16CAB94-2394-478F-A4EA-3F44FB47D86B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B488612A-9EA7-4AD1-B7F2-025B66112C63}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B488612A-9EA7-4AD1-B7F2-025B66112C63}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B488612A-9EA7-4AD1-B7F2-025B66112C63}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B488612A-9EA7-4AD1-B7F2-025B66112C63}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
