@@ -50,7 +50,9 @@ namespace Kosystem.Web.Controllers
                 var userId = await roomService.RegisterUserAsync(user);
                 return Ok(SuccessData(data: new
                 {
-                    userId
+                    userId,
+                    roomName = room.Name,
+                    roomId = room.Id
                 }));
             }
             catch (Exception e)

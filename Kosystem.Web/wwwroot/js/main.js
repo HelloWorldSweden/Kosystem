@@ -30,7 +30,12 @@ $('#loginForm .roomBtn').on('click', function (event) {
         }).done(function (response) {
             if (response.success) {
                 var userId = response.data.userId;
+                var roomName = response.data.roomName;
                 console.log("User id:", userId);
+
+                $('#loginForm input, #loginForm button').attr('disabled', 'disabled');
+                $('#roomDiv').slideDown();
+                $('#roomName').text(roomName);
 
                 createCookie("kosystem-userId", userId);
             } else {
