@@ -36,13 +36,13 @@ namespace Kosystem.Data
             return entity.Id;
         }
 
-        public async Task UnregisterRoomAsync(Room room, CancellationToken cancellationToken = default)
+        public async Task UnregisterRoomAsync(Guid roomId, CancellationToken cancellationToken = default)
         {
-            RoomEntity entity = await GetRoomAsync(room, cancellationToken);
+            RoomEntity entity = await GetRoomEntityByIdAsync(roomId, cancellationToken);
 
             if (entity is null)
             {
-                throw new InvalidOperationException($"Room with id '{room.Id}' does not exists.");
+                throw new InvalidOperationException($"Room with id '{roomId}' does not exists.");
             }
 
             dbContext.Rooms.Remove(entity);
@@ -73,24 +73,24 @@ namespace Kosystem.Data
             return userEntity.Id;
         }
 
-        public async Task UnregisterUserAsync(Room room, User user, CancellationToken cancellationToken = default)
+        public async Task UnregisterUserAsync(Guid userId, CancellationToken cancellationToken = default)
         {
-            UserEntity userEntity = await GetUserAsync(room, user, cancellationToken);
+            UserEntity userEntity = await GetUserEntityByIdAsync(userId, cancellationToken);
             if (userEntity is null)
             {
-                throw new InvalidOperationException($"User with id '{user.Id}' does not exists.");
+                throw new InvalidOperationException($"User with id '{userId}' does not exists.");
             }
 
             dbContext.Users.Remove(userEntity);
             await dbContext.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<bool> EnqueueUserAsync(Room room, User user, CancellationToken cancellationToken = default)
+        public async Task<bool> EnqueueUserAsync(Guid userId, CancellationToken cancellationToken = default)
         {
-            UserEntity userEntity = await GetUserAsync(room, user, cancellationToken);
+            UserEntity userEntity = await GetUserEntityByIdAsync(userId, cancellationToken);
             if (userEntity is null)
             {
-                throw new InvalidOperationException($"User with id '{user.Id}' does not exists.");
+                throw new InvalidOperationException($"User with id '{userId}' does not exists.");
             }
 
             if (userEntity.EnqueuedAt.HasValue)
@@ -104,12 +104,12 @@ namespace Kosystem.Data
             return true;
         }
 
-        public async Task<bool> DequeueUserAsync(Room room, User user, CancellationToken cancellationToken = default)
+        public async Task<bool> DequeueUserAsync(Guid userId, CancellationToken cancellationToken = default)
         {
-            UserEntity userEntity = await GetUserAsync(room, user, cancellationToken);
+            UserEntity userEntity = await GetUserEntityByIdAsync(userId, cancellationToken);
             if (userEntity is null)
             {
-                throw new InvalidOperationException($"User with id '{user.Id}' does not exists.");
+                throw new InvalidOperationException($"User with id '{userId}' does not exists.");
             }
 
             if (!userEntity.EnqueuedAt.HasValue)
@@ -123,10 +123,10 @@ namespace Kosystem.Data
             return true;
         }
 
-        public async Task<ICollection<User>> ListIdleInRoomAsync(Room room, CancellationToken cancellationToken = default)
+        public async Task<ICollection<User>> ListIdleInRoomAsync(Guid roomId, CancellationToken cancellationToken = default)
         {
             var userEntitiesNotInQueue = dbContext.Rooms
-                .Where(o => o.Id == room.Id)
+                .Where(o => o.Id == roomId)
                 .SelectMany(o => o.Users)
                 .Where(o => !o.EnqueuedAt.HasValue);
 
@@ -142,10 +142,10 @@ namespace Kosystem.Data
             return await usersNotInQueue.ToArrayAsync(cancellationToken);
         }
 
-        public async Task<IList<User>> ListQueueInRoomAsync(Room room, CancellationToken cancellationToken = default)
+        public async Task<IList<User>> ListQueueInRoomAsync(Guid roomId, CancellationToken cancellationToken = default)
         {
             var userEntitiesInQueue = dbContext.Rooms
-                .Where(o => o.Id == room.Id)
+                .Where(o => o.Id == roomId)
                 .SelectMany(o => o.Users)
                 .Where(o => o.EnqueuedAt.HasValue);
 
@@ -182,21 +182,28 @@ namespace Kosystem.Data
             return await rooms.ToListAsync(cancellationToken);
         }
 
-        private Task<RoomEntity> GetRoomAsync(Room room, CancellationToken cancellationToken = default)
+        private Task<RoomEntity> GetRoomEntityByIdAsync(Guid roomId, CancellationToken cancellationToken = default)
         {
-            return dbContext.Rooms.FirstOrDefaultAsync(o => o.Id == room.Id, cancellationToken);
+            return dbContext.Rooms
+                .FirstOrDefaultAsync(o => o.Id == roomId, cancellationToken);
         }
 
-        private Task<UserEntity> GetUserAsync(Room room, User user, CancellationToken cancellationToken = default)
+        private Task<RoomEntity> GetRoomEntityWithUsersByIdAsync(Guid roomId, CancellationToken cancellationToken = default)
         {
-            return dbContext.Users.FirstOrDefaultAsync(o => o.Id == user.Id && o.RoomId == room.Id, cancellationToken);
+            return dbContext.Rooms
+                .Include(o => o.Users)
+                .FirstOrDefaultAsync(o => o.Id == roomId, cancellationToken);
+        }
+
+        private Task<UserEntity> GetUserEntityByIdAsync(Guid userId, CancellationToken cancellationToken = default)
+        {
+            return dbContext.Users
+                .FirstOrDefaultAsync(o => o.Id == userId, cancellationToken);
         }
 
         public async Task<Room> GetRoomByIdAsync(Guid roomId, CancellationToken cancellationToken = default)
         {
-            var roomEntity = await dbContext.Rooms
-                .Include(o => o.Users)
-                .FirstOrDefaultAsync(o => o.Id == roomId, cancellationToken);
+            var roomEntity = await GetRoomEntityWithUsersByIdAsync(roomId);
 
             if (roomEntity == null)
             {
@@ -219,10 +226,9 @@ namespace Kosystem.Data
             };
         }
 
-        public async Task<User> GetUserByIdAsync(Room room, Guid userId, CancellationToken cancellationToken = default)
+        public async Task<User> GetUserByIdAsync(Guid userId, CancellationToken cancellationToken = default)
         {
-            var userEntity = await dbContext.Users
-                .FirstOrDefaultAsync(o => o.Id == userId && o.RoomId == room.Id, cancellationToken);
+            var userEntity = await GetUserEntityByIdAsync(userId, cancellationToken);
 
             if (userEntity == null)
             {
