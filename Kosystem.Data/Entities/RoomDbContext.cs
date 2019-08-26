@@ -24,11 +24,8 @@ namespace Kosystem.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<UserEntity>().HasKey(table => new
-            {
-                table.Id,
-                table.RoomId,
-            });
+            builder.Entity<UserEntity>()
+                .HasIndex(e => e.RoomId);
         }
 
     }
