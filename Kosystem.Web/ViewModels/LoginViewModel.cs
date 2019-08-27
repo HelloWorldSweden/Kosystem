@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Kosystem.Web.ViewModels
 {
-    public class LoginViewModel
+    public class RegisterUserViewModel
     {
         [Display(Name = "Ditt namn")]
         [Required]

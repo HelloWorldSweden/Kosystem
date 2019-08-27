@@ -67,7 +67,6 @@ namespace Kosystem.Web
 
             app.UseSignalR(routes =>
             {
-                routes.MapHub<ChatHub>("/chathub");
                 routes.MapHub<KoHub>("/kohub");
             });
         }

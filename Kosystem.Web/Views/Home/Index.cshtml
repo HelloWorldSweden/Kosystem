@@ -5,7 +5,7 @@
     var now = DateTimeOffset.UtcNow;
 }
 
-<partial name="_LoginFormPartial" model="@new LoginViewModel()" />
+<partial name="_LoginFormPartial" model="@new RegisterUserViewModel()" />
 <partial name="_RoomPartial" />
 
 @section Scripts {
@@ -13,7 +13,7 @@
 
     <environment include="Development">
         <script src="~/lib/signalr/signalr.js"></script>
-        <script src="~/js/main.js"></script>
+        <script asp-src-include="~/js/*.js" asp-src-exclude="~/js/*.min.js"></script>
     </environment>
     <environment exclude="Development">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/aspnet-signalr/1.1.4/signalr.min.js"
@@ -21,6 +21,6 @@
                 crossorigin="anonymous"
                 asp-fallback-src="~/lib/signalr/signalr.min.js"
                 asp-fallback-test="signalR"></script>
-        <script src="~/js/main.js"></script>
+        <script asp-src-include="~/js/*.js" asp-src-exclude="~/js/*.min.js"></script>
     </environment>
 }

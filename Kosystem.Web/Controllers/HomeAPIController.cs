@@ -25,7 +25,7 @@ namespace Kosystem.Web.Controllers
         }
 
         [HttpPost("user")]
-        public async Task<IActionResult> JoinRoom([FromForm] LoginViewModel model)
+        public async Task<IActionResult> JoinRoom([FromForm] RegisterUserViewModel model)
         {
             try
             {
@@ -50,6 +50,7 @@ namespace Kosystem.Web.Controllers
                 var userId = await roomService.RegisterUserAsync(user);
                 return Ok(SuccessData(data: new
                 {
+                    userName = user.Name,
                     userId,
                     roomName = room.Name,
                     roomId = room.Id
