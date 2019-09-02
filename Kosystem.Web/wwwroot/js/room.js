@@ -1,7 +1,15 @@
 ﻿"use strict";
 
 /**
- * @param {{userName:string, userId:string, roomName:string, roomId:string}} data
+ * @typedef {object} RoomData
+ * @property {string} userName
+ * @property {string} userId
+ * @property {string} roomName
+ * @property {string} roomId
+ */
+
+/**
+ * @param {RoomData} data
  */
 function roomShow(data) {
     $('#loginForm input, #loginForm button').attr('disabled', 'disabled');
