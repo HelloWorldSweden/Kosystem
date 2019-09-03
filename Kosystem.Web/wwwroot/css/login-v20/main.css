@@ -7,12 +7,12 @@
 
 @font-face {
   font-family: OpenSans-Regular;
-  src: url('../fonts/OpenSans/OpenSans-Regular.ttf'); 
+  src: url('/fonts/OpenSans/OpenSans-Regular.ttf'); 
 }
 
 @font-face {
   font-family: OpenSans-Bold;
-  src: url('../fonts/OpenSans/OpenSans-Bold.ttf'); 
+  src: url('/fonts/OpenSans/OpenSans-Bold.ttf'); 
 }
 
 
@@ -214,7 +214,7 @@ iframe {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-end;
-  width: 50%;
+  width: 100%;
   height: 75px;
   position: relative;
   border: 1px solid #e0e0e0;
@@ -224,10 +224,6 @@ iframe {
 
 .wrap-input100.rs1 {
   border-top-left-radius: 12px;
-  border-right: none;
-}
-
-.wrap-input100.rs2 {
   border-top-right-radius: 12px;
 }
 

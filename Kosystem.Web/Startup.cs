@@ -33,6 +33,7 @@ namespace Kosystem.Web
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.AddCors();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddSignalR(config =>
             {
@@ -61,6 +62,7 @@ namespace Kosystem.Web
 
             app.UseHttpsRedirection();
             app.UseCookiePolicy();
+            app.UseCors();
 
             app.UseStaticFiles();
             app.UseMvcWithDefaultRoute();

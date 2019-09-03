@@ -54,6 +54,10 @@
         "css/select2.css",
         "css/select2.min.css"
       ]
+    },
+    {
+      "library": "animsition@4.0.2",
+      "destination": "wwwroot/lib/animsition/"
     }
   ]
 }
