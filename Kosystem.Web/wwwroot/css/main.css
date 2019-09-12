@@ -1,0 +1,36 @@
+﻿
+.container-background {
+    width: 100%;
+    min-height: 100vh;
+    padding: 15px;
+    background: #2575fc;
+    background: -webkit-linear-gradient(270deg, #6a11cb, #2575fc, #f2994a, #f2c94c);
+    background: -o-linear-gradient(270deg, #6a11cb, #2575fc, #f2994a, #f2c94c);
+    background: -moz-linear-gradient(270deg, #6a11cb, #2575fc, #f2994a, #f2c94c);
+    background: linear-gradient(270deg, #6a11cb, #2575fc, #f2994a, #f2c94c);
+    background-size: 800% 800%;
+    /*-webkit-animation: change-background 30s ease infinite;*/
+    /*-moz-animation: change-background 30s ease infinite;*/
+    /*animation: change-background 30s ease infinite;*/
+}
+
+@-webkit-keyframes change-background {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+@-moz-keyframes change-background {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+@keyframes change-background {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+
+.center-divs > div {
+    margin-left: auto;
+    margin-right: auto;
+}

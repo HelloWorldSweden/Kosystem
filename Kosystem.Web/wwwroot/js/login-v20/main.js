@@ -35,11 +35,11 @@
     });
 
 
-    $('.validate-form .input100').each(function(){
-        $(this).focus(function(){
-           hideValidate(this);
-        });
-    });
+    //$('.validate-form .input100').each(function(){
+    //    $(this).focus(function(){
+    //       hideValidate(this);
+    //    });
+    //});
 
     function validate (input) {
         if($(input).attr('type') == 'email' || $(input).attr('name') == 'email') {

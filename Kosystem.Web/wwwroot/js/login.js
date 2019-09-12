@@ -3,6 +3,23 @@
 $(function () {
     var $form = $('#loginForm');
 
+    var validator = $form.data('validator');
+    validator.settings.errorPlacement = function (error, element) {
+        var $thisAlert = $(element).parent();
+        $thisAlert.addClass('alert-validate');
+        $thisAlert.attr('data-validate-error', error.text());
+    };
+    validator.settings.unhighlight = function (element) {
+        var $element = $(element);
+        if ($element.hasClass('input100')) {
+            var $thisAlert = $element.parent();
+            $thisAlert.removeClass('alert-validate');
+            $thisAlert.removeAttr('data-validate-error');
+        } else {
+            console.log("Triggered on non-input100", element);
+        }
+    };
+
     $form.find('.roomBtn').on('click', function (event) {
         event.preventDefault();
 
