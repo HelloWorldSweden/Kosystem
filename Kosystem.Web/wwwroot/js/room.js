@@ -22,7 +22,7 @@ const slideFadeShow = (elem) => {
  */
 function roomShow(data) {
     $('#loginForm input, #loginForm button').attr('disabled', 'disabled');
-    $('#roomName').text(roomName);
+    $('#roomName').text(data.roomName);
 
     slideFadeHide($('#loginDiv'));
     slideFadeShow($('#roomDiv'));
