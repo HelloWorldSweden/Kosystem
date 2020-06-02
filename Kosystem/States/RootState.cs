@@ -1,7 +1,9 @@
-﻿namespace Kosystem.States
+﻿using Kosystem.Shared;
+
+namespace Kosystem.States
 {
     public class RootState
     {
-        public RoomCollection Rooms { get; } = new RoomCollection();
+        public RoomModelCollection Rooms { get; } = new RoomModelCollection();
     }
 }

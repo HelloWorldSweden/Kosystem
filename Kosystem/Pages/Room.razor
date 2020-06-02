@@ -1,8 +1,16 @@
 ﻿@page "/{RoomId:int}"
+@inject RootState RootState
 
-<h1>Room #@RoomId</h1>
+<Kosystem.Components.RoomComponent Room="_room"/>
 
 @code {
     [Parameter]
     public int RoomId { get; set; }
+
+    private RoomModel? _room;
+
+    protected override void OnParametersSet()
+    {
+        _room = RootState.Rooms.TryGetById(RoomId);
+    }
 }

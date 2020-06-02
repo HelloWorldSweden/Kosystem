@@ -1,5 +1,6 @@
 ﻿@page "/"
 @inject NavigationManager NavigationManager
+@inject RootState RootState
 
 <h1>Börja köa efter hjälp</h1>
 
@@ -35,6 +36,13 @@
 
     void HandleValidSubmit()
     {
+        if (model.RoomId is null || model.Name is null)
+        {
+            return;
+        }
+
+        RootState.Rooms.TryAdd(new RoomModel(model.RoomId.Value, "unnamed room"));
+        RootState.Rooms.TryGetById(model.RoomId.Value)?.People.TryAdd(new PersonModel(model.RoomId.Value, model.Name));
         NavigationManager.NavigateTo($"/{model.RoomId}");
     }
 }
