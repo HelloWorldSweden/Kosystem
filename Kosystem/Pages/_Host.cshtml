@@ -14,6 +14,7 @@
 
     <environment include="Development">
         <link rel="stylesheet" type="text/css" href="~/lib/papercss/dist/paper.css" />
+        <link rel="stylesheet" type="text/css" asp-href-include="~/css/*.css" asp-href-exclude="~/css/*.min.css" />
     </environment>
     <environment exclude="Development">
         <link rel="stylesheet"
@@ -22,6 +23,7 @@
               crossorigin="anonymous"
               asp-fallback-href="~/lib/papercss/dist/paper.min.css"
               asp-fallback-test-class="paper" asp-fallback-test-property="background-color" asp-fallback-test-value="#fff" />
+        <link rel="stylesheet" type="text/css" asp-href-include="~/css/*.min.css" />
     </environment>
 </head>
 <body>
