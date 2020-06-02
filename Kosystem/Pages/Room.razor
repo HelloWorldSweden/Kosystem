@@ -1,0 +1,8 @@
+﻿@page "/{RoomId:int}"
+
+<h1>Room #@RoomId</h1>
+
+@code {
+    [Parameter]
+    public int RoomId { get; set; }
+}
