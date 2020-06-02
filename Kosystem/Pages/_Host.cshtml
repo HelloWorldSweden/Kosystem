@@ -11,47 +11,17 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Kosystem</title>
-    <base href="~/" />
-    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
-    <link href="css/site.css" rel="stylesheet" />
-
 
     <environment include="Development">
-        <link rel="stylesheet" type="text/css" href="~/lib/bootstrap/css/bootstrap.css" />
-        <link rel="stylesheet" type="text/css" href="~/lib/select2/css/select2.css" />
-        <link rel="stylesheet" type="text/css" href="~/lib/font-awesome/css/font-awesome.css" />
-        <link rel="stylesheet" type="text/css" href="~/lib/animsition/css/animsition.css" />
-        <link rel="stylesheet" type="text/css" asp-href-include="~/css/*.css" asp-href-exclude="~/css/*.min.css" />
+        <link rel="stylesheet" type="text/css" href="~/lib/papercss/dist/paper.css" />
     </environment>
     <environment exclude="Development">
         <link rel="stylesheet"
-              href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css"
-              integrity="sha256-YLGeXaapI0/5IgZopewRJcFXomhRMlYYjugPLSyNjTY="
+              href="https://cdnjs.cloudflare.com/papercss@1.6.1/dist/paper.min.css"
+              integrity="sha384-GeQUdXL3egbQJLKdpnc5+pNUvkF1pFnAY4mOmSOdsDpm+HYNJv9eAqz45hu7yBXM"
               crossorigin="anonymous"
-              asp-fallback-href="~/lib/bootstrap/css/bootstrap.min.css"
-              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
-        <link rel="stylesheet"
-              href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/css/select2.min.css"
-              integrity="sha256-FdatTf20PQr/rWg+cAKfl6j4/IY3oohFAJ7gVC3M34E="
-              crossorigin="anonymous"
-              asp-fallback-href="~/lib/select2/css/select2.min.css"
-              asp-fallback-test-class="select2-container" asp-fallback-test-property="box-sizing" asp-fallback-test-value="border-box" />
-        <link rel="stylesheet"
-              href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
-              integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0="
-              crossorigin="anonymous"
-              asp-fallback-href="~/lib/font-awesome/css/font-awesome.min.css"
-              asp-fallback-test-class="fa" asp-fallback-test-property="display" asp-fallback-test-value="inline-block" />
-        <link rel="stylesheet"
-              href="https://cdnjs.cloudflare.com/ajax/libs/animsition/4.0.2/css/animsition.min.css"
-              integrity="sha256-FAIOZJGGkyuIp/gVrVL/k52z4rpCKMrRlYMdGCWstUo="
-              crossorigin="anonymous"
-              asp-fallback-href="~/lib/animsition/css/animsition.min.css"
-              asp-fallback-test-class="animsition" asp-fallback-test-property="opacity" asp-fallback-test-value="0" />
-        <link rel="stylesheet"
-              type="text/css"
-              asp-href-include="~/css/*.css"
-              asp-href-exclude="~/css/*.min.css" />
+              asp-fallback-href="~/lib/papercss/dist/paper.min.css"
+              asp-fallback-test-class="paper" asp-fallback-test-property="background-color" asp-fallback-test-value="#fff" />
     </environment>
 </head>
 <body>

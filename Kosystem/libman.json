@@ -1,0 +1,15 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "provider": "unpkg",
+      "library": "papercss@1.6.1",
+      "destination": "wwwroot/lib/papercss/",
+      "files": [
+        "dist/paper.css",
+        "dist/paper.min.css"
+      ]
+    }
+  ]
+}
