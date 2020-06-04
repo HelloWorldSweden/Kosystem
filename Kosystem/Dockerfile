@@ -10,7 +10,7 @@ WORKDIR /src
 COPY ["Kosystem/Kosystem.csproj", "Kosystem/"]
 RUN dotnet restore "Kosystem/Kosystem.csproj"
 COPY . .
-WORKDIR "/src/Kosystem"
+WORKDIR /src/Kosystem
 RUN dotnet build "Kosystem.csproj" -c Release -o /app/build
 
 FROM build AS publish
