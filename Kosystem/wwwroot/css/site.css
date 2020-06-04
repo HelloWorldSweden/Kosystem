@@ -1,0 +1,30 @@
+html,
+body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1 0 auto;
+}
+
+footer {
+    flex-shrink: 0;
+    padding: 1rem 0;
+}
+
+.valid.modified:not([type=checkbox]) {
+    border: 2px solid #26b050;
+}
+
+.invalid {
+    border: 3px solid red;
+}
+
+.validation-message {
+    color: red;
+}

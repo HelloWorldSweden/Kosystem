@@ -1,0 +1,48 @@
+﻿@page "/"
+@inject NavigationManager NavigationManager
+@inject RootState RootState
+
+<h1>Börja köa efter hjälp</h1>
+
+<EditForm Model="model" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+
+    <div class="row">
+        <div class="col sm-4">
+            <div class="form-group">
+                <label for="roomNumber">Rumsnumret</label>
+                <ValidationMessage For="() => model.RoomId" />
+                <InputNumber class="input-block" id="roomNumber" placeholder="0000" @bind-Value="model.RoomId" />
+            </div>
+        </div>
+        <div class="col sm-8">
+            <div class="form-group">
+                <label for="name">Ditt namn</label>
+                <ValidationMessage For="() => model.Name" />
+                <InputText class="input-block" type="text" id="name" @bind-Value="model.Name" />
+            </div>
+        </div>
+    </div>
+
+    <div class="row flex-center">
+        <div class="sm-4 col">
+            <button class="btn-large" type="submit">Gå med rum</button>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    private readonly JoinRoomViewModel model = new JoinRoomViewModel();
+
+    void HandleValidSubmit()
+    {
+        if (model.RoomId is null || model.Name is null)
+        {
+            return;
+        }
+
+        RootState.Rooms.TryAdd(new RoomModel(model.RoomId.Value, "unnamed room"));
+        RootState.Rooms.TryGetById(model.RoomId.Value)?.People.TryAdd(new PersonModel(model.RoomId.Value, model.Name));
+        NavigationManager.NavigateTo($"/{model.RoomId}");
+    }
+}

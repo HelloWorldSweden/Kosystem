@@ -1,0 +1,9 @@
+[
+  {
+    "inputFiles": [
+      "wwwroot/css/blazor.css",
+      "wwwroot/css/site.css"
+    ],
+    "outputFileName": "wwwroot/css/site.min.css"
+  }
+]

@@ -1,0 +1,18 @@
+﻿<h1>@(Room?.Id.ToString("'#'0000") ?? "/null/") @Room?.Name</h1>
+
+@if (Room != null && Room.People.Count > 0)
+{
+    foreach (var person in Room.People)
+    {
+        <PersonComponent @key="person.Name" Person="person"/>
+    }
+}
+else
+{
+    <p>Finns inga personer i detta rum.</p>
+}
+
+@code {
+    [Parameter]
+    public RoomModel? Room { get; set; }
+}
