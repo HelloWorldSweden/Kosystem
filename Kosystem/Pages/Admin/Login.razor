@@ -1,0 +1,27 @@
+@page "/login"
+@inject IAuthSetter AuthSetter
+
+<h3>Login</h3>
+
+<button @onclick="Tmp">Log me in</button>
+
+<AuthorizeView>
+    <Authorized>
+        <p>
+            I am logged in ✅
+        </p>
+    </Authorized>
+    <NotAuthorized>
+        <p>
+            I am logged out ❎
+        </p>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    private void Tmp()
+    {
+        AuthSetter.Login();
+    }
+
+}

@@ -1,6 +1,7 @@
 using Kosystem.Services;
 using Kosystem.States;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,6 +25,12 @@ namespace Kosystem
             services.AddRazorPages();
             services.AddServerSideBlazor();
 
+            services.AddScoped<AuthenticationStateProvider, MyAuthenticationStateProvider>();
+            services.AddScoped(sp => {
+                var provider = (IAuthSetter)sp.GetRequiredService<AuthenticationStateProvider>();
+                return provider;
+            });
+
             var repo = new KoInMemoryRepository();
             services.AddSingleton<IPersonRepository>(repo);
             services.AddSingleton<IRoomRepository>(repo);
@@ -43,6 +50,8 @@ namespace Kosystem
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            app.UseAuthentication();
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
