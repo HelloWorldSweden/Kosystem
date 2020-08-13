@@ -30,6 +30,11 @@ namespace Kosystem.Services
             }
         }
 
+        public bool IsLoggedIn()
+        {
+            return isLoggedIn;
+        }
+
         public void Login()
         {
             isLoggedIn = true;

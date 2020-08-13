@@ -1,27 +1,77 @@
 @page "/login"
 @inject IAuthSetter AuthSetter
-
-<h3>Login</h3>
-
-<button @onclick="Tmp">Log me in</button>
+@inject Microsoft.Extensions.Options.IOptions<LoginOptions> LoginOptions
+@inject NavigationManager NavigationManager
 
 <AuthorizeView>
+    <NotAuthorized Context="NotAuthorizedContext">
+        <h1>Logga in först</h1>
+
+        <EditForm Model="model" OnValidSubmit="HandleValidSubmit">
+            <DataAnnotationsValidator />
+
+            <input class="alert-state" id="invalid-credentials" type="checkbox" @bind="hideInvalidCredentialsAlert" />
+            <div class="alert alert-danger dismissible border-2">
+                Fel lösenord. Du får ej passera :(
+                <label class="btn-close" for="invalid-credentials">X</label>
+            </div>
+
+            <div class="row flex-center">
+                <div class="col sm-6">
+                    <div class="form-group">
+                        <label for="name">Lösenord</label>
+                        <InputText class="input-block border-5" type="password" id="name" @bind-Value="model.Password" />
+                        <ValidationMessage For="() => model.Password" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="row flex-center">
+                <button class="btn-large border-6" type="submit">Logga in</button>
+            </div>
+        </EditForm>
+
+    </NotAuthorized>
     <Authorized>
-        <p>
-            I am logged in ✅
+        <p class="text-muted">
+            Omdirigerar dig till admin sidan...
         </p>
     </Authorized>
-    <NotAuthorized>
-        <p>
-            I am logged out ❎
-        </p>
-    </NotAuthorized>
 </AuthorizeView>
 
 @code {
-    private void Tmp()
+    private LoginViewModel model = new LoginViewModel();
+
+    private bool hideInvalidCredentialsAlert = true;
+
+    protected override void OnInitialized()
     {
-        AuthSetter.Login();
+        if (AuthSetter.IsLoggedIn())
+        {
+            RedirectToAdminPage();
+        }
     }
 
+    private void HandleValidSubmit()
+    {
+        if (model.Password is null)
+        {
+            return;
+        }
+
+        if (model.Password.Equals(LoginOptions.Value.Password))
+        {
+            AuthSetter.Login();
+            RedirectToAdminPage();
+        }
+        else
+        {
+            hideInvalidCredentialsAlert = false;
+        }
+    }
+
+    private void RedirectToAdminPage()
+    {
+        NavigationManager.NavigateTo("/admin");
+    }
 }

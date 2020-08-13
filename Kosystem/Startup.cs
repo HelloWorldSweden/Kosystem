@@ -1,3 +1,4 @@
+using Kosystem.Configuration;
 using Kosystem.Services;
 using Kosystem.States;
 using Microsoft.AspNetCore.Builder;
@@ -35,6 +36,10 @@ namespace Kosystem
             services.AddSingleton<IPersonRepository>(repo);
             services.AddSingleton<IRoomRepository>(repo);
             services.AddScoped<IPersonSession, PersonSession>();
+
+            services.AddOptions<LoginOptions>()
+                .Bind(Configuration.GetSection("Login"))
+                .ValidateDataAnnotations();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
