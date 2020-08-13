@@ -28,3 +28,11 @@ footer {
 .validation-message {
     color: red;
 }
+
+.rooms-table-room-name {
+    width: 12rem;
+    max-width: 12rem;
+    overflow-x: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}

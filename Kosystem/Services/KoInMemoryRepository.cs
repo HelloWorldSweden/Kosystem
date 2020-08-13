@@ -57,7 +57,7 @@ namespace Kosystem.States
             }
 
             _peoplePerRoom.TryRemove(roomId, out _);
-            return _people.TryRemove(roomId, out _);
+            return _rooms.TryRemove(roomId, out _);
         }
 
         public bool DequeuePerson(int personId)
@@ -111,6 +111,21 @@ namespace Kosystem.States
         public RoomModel? FindRoom(int roomId)
         {
             return _rooms.TryGetValue(roomId, out var room) ? room : null;
+        }
+
+        public IReadOnlyCollection<RoomModel> FindRooms()
+        {
+            var rooms = new List<RoomModel>(_rooms.Count);
+
+            foreach (var room in _rooms.Values)
+            {
+                if (room.HasValue)
+                {
+                    rooms.Add(room.Value);
+                }
+            }
+
+            return rooms;
         }
 
         public bool RemovePersonFromRoom(int roomId, int personId)

@@ -13,6 +13,8 @@ namespace Kosystem.Services
 
         RoomModel? FindRoom(int roomId);
 
+        IReadOnlyCollection<RoomModel> FindRooms();
+
         bool AddPersonToRoom(int roomId, int personId);
 
         bool RemovePersonFromRoom(int roomId, int personId);
