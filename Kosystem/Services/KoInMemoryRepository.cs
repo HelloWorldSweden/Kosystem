@@ -57,7 +57,7 @@ namespace Kosystem.States
             }
 
             _peoplePerRoom.TryRemove(roomId, out _);
-            return _people.TryRemove(roomId, out _);
+            return _rooms.TryRemove(roomId, out _);
         }
 
         public bool DequeuePerson(int personId)

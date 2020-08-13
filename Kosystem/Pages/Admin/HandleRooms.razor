@@ -16,7 +16,7 @@
         <label class="btn-close" for="room-created-alert">X</label>
     </div>
 
-    <div class="row flex-bottom">
+    <div class="row">
         <div class="col sm-8">
             <div class="form-group">
                 <label for="roomName">Rumsnamn</label>
@@ -25,7 +25,7 @@
             </div>
         </div>
         <div class="sm-4 col">
-            <button class="border-5" type="submit" style="margin-bottom: 0.8rem">Skapa nytt rum</button>
+            <button class="border-5" type="submit" style="margin-top: 1.4rem">Skapa nytt rum</button>
         </div>
     </div>
 </EditForm>
@@ -37,8 +37,8 @@
     <table>
         <thead>
             <tr>
-                <th>Rumsnummer</th>
-                <th>Rumsnamn</th>
+                <th style="width: 5.5rem">Rumsnummer</th>
+                <th class="rooms-table-room-name">Rumsnamn</th>
                 <th>Handling</th>
             </tr>
         </thead>
@@ -47,11 +47,24 @@
             {
                 <tr>
                     <td>#@room.Id.ToString("0000")</td>
-                    <td>@room.Name</td>
-                    <td>
-                        <a href="/@room.Id" target="_blank">
-                            <img class="no-border" src="/img/external-link.svg" style="width: 2rem;" title="Öppna rum i ny flik" alt="Öppna rum"/>
-                        </a>
+                    <td class="rooms-table-room-name">@room.Name</td>
+                    <td class="row flex-middle">
+                        <span>
+                            <a href="/@room.Id" target="_blank">
+                                <img class="no-border" src="/img/external-link.svg" style="width: 2rem; float: left;" title="Öppna rum i ny flik" alt="Öppna"/>
+                            </a>
+                        </span>
+                        <button type="button" style="padding: 0; width: 2rem;" @onclick="@(_ => deleteRoom = room.Id)">
+                            <img class="no-border" src="/img/delete.svg" style="width: 2rem; float: left;" title="Ta bort rum" alt="Ta bort"/>
+                        </button>
+                        @if (deleteRoom == room.Id)
+                        {
+                            <div class="danger">
+                                Ta bort #@room.Id.ToString("0000")?
+                                <button type="button" class="btn-danger btn-small" @onclick="@(_ => HandleDeleteRoom(room.Id))">Ja!</button>
+                                <button type="button" class="btn-primary btn-small" @onclick="@(_ => deleteRoom = null)">Avbryt</button>
+                            </div>
+                        }
                     </td>
                 </tr>
             }
@@ -75,6 +88,8 @@ else
 
     private IReadOnlyCollection<RoomModel> rooms = Array.Empty<RoomModel>();
 
+    private int? deleteRoom;
+
     protected override void OnInitialized()
     {
         UpdateRoomsList();
@@ -83,6 +98,13 @@ else
     private void UpdateRoomsList()
     {
         rooms = RoomRepository.FindRooms();
+    }
+
+    private void HandleDeleteRoom(int roomId)
+    {
+        deleteRoom = null;
+        RoomRepository.DeleteRoom(roomId);
+        UpdateRoomsList();
     }
 
     private void HandleValidCreateRoomSubmit()
