@@ -1,8 +1,56 @@
 @page "/admin"
 @attribute [Authorize]
+@inject IRoomRepository RoomRepository
 
-<h3>HandleRooms</h3>
+<h1>Hantera rum</h1>
+
+<EditForm Model="createRoomModel" OnValidSubmit="HandleValidCreateRoomSubmit">
+    <DataAnnotationsValidator />
+
+    <input class="alert-state" id="room-created-alert" type="checkbox" @bind="hideCreatedRoomDialog" />
+    <div class="alert alert-success background-success dismissible">
+        <div>
+            <h3>Rum <span class="badge success">#@createdRoom.Id.ToString("0000") @createdRoom.Name</span> har skapats!</h3>
+            <p><a href="/@createdRoom.Id">Gå till rum #@createdRoom.Id.ToString("0000")</a></p>
+        </div>
+        <label class="btn-close" for="room-created-alert">X</label>
+    </div>
+
+    <div class="row flex-bottom">
+        <div class="col sm-8">
+            <div class="form-group">
+                <label for="roomName">Rumsnamn</label>
+                <InputText class="input-block border-3" type="text" id="roomName" @bind-Value="createRoomModel.Name" />
+                <ValidationMessage For="() => createRoomModel.Name" />
+            </div>
+        </div>
+        <div class="sm-4 col">
+            <button class="border-5" type="submit" style="margin-bottom: 0.8rem">Skapa nytt rum</button>
+        </div>
+    </div>
+</EditForm>
+
+<h2>Existerande rum</h2>
+
+<p>// todo</p>
 
 @code {
+
+    private CreateRoomViewModel createRoomModel = new CreateRoomViewModel();
+
+    private bool hideCreatedRoomDialog = true;
+
+    private RoomModel createdRoom;
+
+    private void HandleValidCreateRoomSubmit()
+    {
+        if (createRoomModel.Name is null)
+        {
+            return;
+        }
+
+        createdRoom = RoomRepository.CreateRoom(new NewRoomModel(createRoomModel.Name));
+        hideCreatedRoomDialog = false;
+    }
 
 }
