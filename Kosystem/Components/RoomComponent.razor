@@ -1,8 +1,10 @@
-﻿<h1>@(Room?.Id.ToString("'#'0000") ?? "/null/") @Room?.Name</h1>
+@inject IRoomRepository RoomRepository
 
-@if (Room != null && Room.People.Count > 0)
+<h1>#@Room.Id.ToString("0000") @Room.Name</h1>
+
+@if (People?.Count > 0)
 {
-    foreach (var person in Room.People)
+    foreach (var person in People.OrderBy(o => o.EnqueuedAt).ThenBy(o => o.Name))
     {
         <PersonComponent @key="person.Name" Person="person"/>
     }
@@ -14,5 +16,12 @@ else
 
 @code {
     [Parameter]
-    public RoomModel? Room { get; set; }
+    public RoomModel Room { get; set; }
+
+    public IReadOnlyCollection<PersonModel>? People { get; set; }
+
+    protected override void OnInitialized()
+    {
+        RoomRepository.FindPeopleInRoom(Room.Id);
+    }
 }

@@ -1,0 +1,111 @@
+using System;
+using Kosystem.Shared;
+
+namespace Kosystem.Services
+{
+    public class PersonSession : IDisposable, IPersonSession
+    {
+        private readonly IPersonRepository _personRepository;
+        private bool _disposedValue;
+        private int? _registeredPersonId;
+
+        public bool IsRegistered => _registeredPersonId.HasValue;
+
+        public PersonSession(IPersonRepository personRepository)
+        {
+            _personRepository = personRepository;
+        }
+
+        public PersonModel RegisterPerson(string name)
+        {
+            if (_registeredPersonId.HasValue)
+            {
+                throw new InvalidOperationException("A user is already registered for this session.");
+            }
+
+            var person = _personRepository.CreatePerson(new NewPersonModel(name));
+            _registeredPersonId = person.Id;
+            return person;
+        }
+
+        public PersonModel? TryGetCurrentPerson()
+        {
+            if (!_registeredPersonId.HasValue)
+            {
+                return null;
+            }
+
+            return _personRepository.FindPerson(_registeredPersonId.Value);
+        }
+
+        public bool TryGetCurrentPerson(out PersonModel person)
+        {
+            if (!_registeredPersonId.HasValue)
+            {
+                person = default;
+                return false;
+            }
+
+            var possiblyPerson = _personRepository.FindPerson(_registeredPersonId.Value);
+            if (!possiblyPerson.HasValue)
+            {
+                person = default;
+                return false;
+            }
+
+            person = possiblyPerson.Value;
+            return true;
+        }
+
+        private void UnregisterUser()
+        {
+            if (_registeredPersonId.HasValue)
+            {
+                _personRepository.DeletePerson(_registeredPersonId.Value);
+                _registeredPersonId = null;
+            }
+        }
+
+        public PersonModel SetCurrentPerson(string name)
+        {
+            if (TryGetCurrentPerson(out var person))
+            {
+                if (!person.Name.Equals(name, StringComparison.Ordinal))
+                {
+                    var updatedPerson = _personRepository.UpdatePerson(new UpdatePersonModel(person.Id, name));
+                    if (updatedPerson.HasValue)
+                    {
+                        person = updatedPerson.Value;
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException("Failed to update person. Maybe it was removed just as the update was being applied?");
+                    }
+                }
+
+                return person;
+            }
+
+            return RegisterPerson(name);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposedValue)
+            {
+                if (disposing)
+                {
+                    UnregisterUser();
+                }
+
+                _disposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+    }
+}

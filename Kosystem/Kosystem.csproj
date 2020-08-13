@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Kosystem.Shared\Kosystem.Shared.csproj" />
+    <ProjectReference Include="..\Kosystem.Utility\Kosystem.Utility.csproj" />
   </ItemGroup>
 
 </Project>

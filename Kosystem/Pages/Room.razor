@@ -1,7 +1,10 @@
-﻿@page "/{RoomId:int}"
-@inject RootState RootState
+@page "/{RoomId:int}"
+@inject IRoomRepository RoomRepository
 
-<Kosystem.Components.RoomComponent Room="_room"/>
+@if (_room.HasValue)
+{
+    <Kosystem.Components.RoomComponent Room="_room.Value"/>
+}
 
 @code {
     [Parameter]
@@ -11,6 +14,6 @@
 
     protected override void OnParametersSet()
     {
-        _room = RootState.Rooms.TryGetById(RoomId);
+        _room = RoomRepository.FindRoom(RoomId);
     }
 }

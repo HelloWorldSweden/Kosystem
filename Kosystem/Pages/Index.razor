@@ -1,38 +1,48 @@
-﻿@page "/"
+@page "/"
 @inject NavigationManager NavigationManager
-@inject RootState RootState
+@inject IPersonSession PersonSession
+@inject IRoomRepository RoomRepository
 
 <h1>Börja köa efter hjälp</h1>
 
 <EditForm Model="model" OnValidSubmit="HandleValidSubmit">
     <DataAnnotationsValidator />
 
+    <input class="alert-state" id="unknown-room-alert" type="checkbox" @bind="hideRoomUnkownAlert" />
+    <div class="alert alert-danger dismissible">
+        Rum #@unknownRoomId.ToString("0000") finns inte.
+        <label class="btn-close" for="unknown-room-alert">X</label>
+    </div>
+
     <div class="row">
         <div class="col sm-4">
             <div class="form-group">
                 <label for="roomNumber">Rumsnumret</label>
+                <InputNumber class="input-block border-2" id="roomNumber" placeholder="0000" @bind-Value="model.RoomId" />
                 <ValidationMessage For="() => model.RoomId" />
-                <InputNumber class="input-block" id="roomNumber" placeholder="0000" @bind-Value="model.RoomId" />
             </div>
         </div>
         <div class="col sm-8">
             <div class="form-group">
                 <label for="name">Ditt namn</label>
+                <InputText class="input-block border-3" type="text" id="name" @bind-Value="model.Name" />
                 <ValidationMessage For="() => model.Name" />
-                <InputText class="input-block" type="text" id="name" @bind-Value="model.Name" />
             </div>
         </div>
     </div>
 
     <div class="row flex-center">
         <div class="sm-4 col">
-            <button class="btn-large" type="submit">Gå med rum</button>
+            <button class="btn-large border-4" type="submit">Gå med rum</button>
         </div>
     </div>
 </EditForm>
 
 @code {
     private readonly JoinRoomViewModel model = new JoinRoomViewModel();
+
+    private int unknownRoomId;
+    private bool hideRoomUnkownAlert = true;
 
     void HandleValidSubmit()
     {
@@ -41,8 +51,23 @@
             return;
         }
 
-        RootState.Rooms.TryAdd(new RoomModel(model.RoomId.Value, "unnamed room"));
-        RootState.Rooms.TryGetById(model.RoomId.Value)?.People.TryAdd(new PersonModel(model.RoomId.Value, model.Name));
+        var room = RoomRepository.FindRoom(model.RoomId.Value);
+        if (!room.HasValue)
+        {
+            unknownRoomId = model.RoomId.Value;
+            hideRoomUnkownAlert = false;
+            return;
+        }
+
+        var person = PersonSession.SetCurrentPerson(model.Name);
+        var success = RoomRepository.AddPersonToRoom(room.Value.Id, person.Id);
+
+        if (!success)
+        {
+            unknownRoomId = model.RoomId.Value;
+            hideRoomUnkownAlert = false;
+        }
+
         NavigationManager.NavigateTo($"/{model.RoomId}");
     }
 }

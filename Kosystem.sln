@@ -3,14 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29215.179
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kosystem", "Kosystem\Kosystem.csproj", "{DCD03FBA-A2A5-4711-B47E-9B22AA4BBDEF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kosystem", "Kosystem\Kosystem.csproj", "{DCD03FBA-A2A5-4711-B47E-9B22AA4BBDEF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kosystem.Shared", "Kosystem.Shared\Kosystem.Shared.csproj", "{0626FF25-7F65-4A46-B510-22EAB15054A5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kosystem.Shared", "Kosystem.Shared\Kosystem.Shared.csproj", "{0626FF25-7F65-4A46-B510-22EAB15054A5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{54CD7037-41CB-4A42-8890-01B92B0F6F6B}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		Directory.Build.props = Directory.Build.props
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kosystem.Utility", "Kosystem.Utility\Kosystem.Utility.csproj", "{6D57BDE5-3C39-4650-A68A-DA3832781A7A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,6 +29,10 @@ Global
 		{0626FF25-7F65-4A46-B510-22EAB15054A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0626FF25-7F65-4A46-B510-22EAB15054A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0626FF25-7F65-4A46-B510-22EAB15054A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D57BDE5-3C39-4650-A68A-DA3832781A7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D57BDE5-3C39-4650-A68A-DA3832781A7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D57BDE5-3C39-4650-A68A-DA3832781A7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D57BDE5-3C39-4650-A68A-DA3832781A7A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
