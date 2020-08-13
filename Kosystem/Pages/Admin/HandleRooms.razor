@@ -32,7 +32,25 @@
 
 <h2>Existerande rum</h2>
 
-<p>// todo</p>
+<table>
+    <thead>
+        <tr>
+            <th>Rumsnummer</th>
+            <th>Rumsnamn</th>
+            <th>Handling</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var room in rooms.OrderBy(o => o.Name).ThenBy(o => o.Id))
+        {
+            <tr>
+                <td>#@room.Id.ToString("0000")</td>
+                <td>@room.Name</td>
+                <td><a href="/@room.Id" target="_blank"><img src="~/img/external-link.svg" title="Öppna rum i ny flik" alt="Öppna rum"/></a></td>
+            </tr>
+        }
+    </tbody>
+</table>
 
 @code {
 
@@ -41,6 +59,13 @@
     private bool hideCreatedRoomDialog = true;
 
     private RoomModel createdRoom;
+
+    private IReadOnlyCollection<RoomModel> rooms = Array.Empty<RoomModel>();
+
+    protected override void OnInitialized()
+    {
+        rooms = RoomRepository.FindRooms();
+    }
 
     private void HandleValidCreateRoomSubmit()
     {

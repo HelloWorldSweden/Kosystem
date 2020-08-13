@@ -4,7 +4,7 @@ namespace Kosystem.Services
 {
     public interface IPersonRepository
     {
-        PersonModel CreatePerson(NewPersonModel patch);
+        PersonModel CreatePerson(NewPersonModel newPerson);
 
         bool DeletePerson(int personId);
 

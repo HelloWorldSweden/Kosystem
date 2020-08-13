@@ -113,6 +113,21 @@ namespace Kosystem.States
             return _rooms.TryGetValue(roomId, out var room) ? room : null;
         }
 
+        public IReadOnlyCollection<RoomModel> FindRooms()
+        {
+            var rooms = new List<RoomModel>(_rooms.Count);
+
+            foreach (var room in _rooms.Values)
+            {
+                if (room.HasValue)
+                {
+                    rooms.Add(room.Value);
+                }
+            }
+
+            return rooms;
+        }
+
         public bool RemovePersonFromRoom(int roomId, int personId)
         {
             if (_peoplePerRoom.TryGetValue(roomId, out var peopleInRoom))
