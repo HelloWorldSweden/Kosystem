@@ -32,25 +32,38 @@
 
 <h2>Existerande rum</h2>
 
-<table>
-    <thead>
-        <tr>
-            <th>Rumsnummer</th>
-            <th>Rumsnamn</th>
-            <th>Handling</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var room in rooms.OrderBy(o => o.Name).ThenBy(o => o.Id))
-        {
+@if (rooms.Count > 0)
+{
+    <table>
+        <thead>
             <tr>
-                <td>#@room.Id.ToString("0000")</td>
-                <td>@room.Name</td>
-                <td><a href="/@room.Id" target="_blank"><img src="~/img/external-link.svg" title="Öppna rum i ny flik" alt="Öppna rum"/></a></td>
+                <th>Rumsnummer</th>
+                <th>Rumsnamn</th>
+                <th>Handling</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var room in rooms.OrderBy(o => o.Name).ThenBy(o => o.Id))
+            {
+                <tr>
+                    <td>#@room.Id.ToString("0000")</td>
+                    <td>@room.Name</td>
+                    <td>
+                        <a href="/@room.Id" target="_blank">
+                            <img class="no-border" src="/img/external-link.svg" style="width: 2rem;" title="Öppna rum i ny flik" alt="Öppna rum"/>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>
+        Finns inga rum. Skapa ett genom att fylla i textfältet ovan!
+    </p>
+}
 
 @code {
 
@@ -64,6 +77,11 @@
 
     protected override void OnInitialized()
     {
+        UpdateRoomsList();
+    }
+
+    private void UpdateRoomsList()
+    {
         rooms = RoomRepository.FindRooms();
     }
 
@@ -76,6 +94,7 @@
 
         createdRoom = RoomRepository.CreateRoom(new NewRoomModel(createRoomModel.Name));
         hideCreatedRoomDialog = false;
+        UpdateRoomsList();
     }
 
 }
