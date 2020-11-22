@@ -7,14 +7,17 @@
 <EditForm Model="createRoomModel" OnValidSubmit="HandleValidCreateRoomSubmit">
     <DataAnnotationsValidator />
 
-    <input class="alert-state" id="room-created-alert" type="checkbox" @bind="hideCreatedRoomDialog" />
-    <div class="alert alert-success background-success dismissible">
-        <div>
-            <h3>Rum <span class="badge success">#@createdRoom.Id.ToString("0000") @createdRoom.Name</span> har skapats!</h3>
-            <p><a href="/@createdRoom.Id">Gå till rum #@createdRoom.Id.ToString("0000")</a></p>
+    @if (createdRoom is not null)
+    {
+        <input class="alert-state" id="room-created-alert" type="checkbox" @bind="hideCreatedRoomDialog" />
+        <div class="alert alert-success background-success dismissible">
+            <div>
+                <h3>Rum <span class="badge success">#@createdRoom.Id.ToString("0000") @createdRoom.Name</span> har skapats!</h3>
+                <p><a href="/@createdRoom.Id">Gå till rum #@createdRoom.Id.ToString("0000")</a></p>
+            </div>
+            <label class="btn-close" for="room-created-alert">X</label>
         </div>
-        <label class="btn-close" for="room-created-alert">X</label>
-    </div>
+    }
 
     <div class="row">
         <div class="col sm-8">
@@ -84,7 +87,7 @@ else
 
     private bool hideCreatedRoomDialog = true;
 
-    private RoomModel createdRoom;
+    private RoomModel? createdRoom;
 
     private IReadOnlyCollection<RoomModel> rooms = Array.Empty<RoomModel>();
 

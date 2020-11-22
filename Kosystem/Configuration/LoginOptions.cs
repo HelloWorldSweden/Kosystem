@@ -2,9 +2,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Kosystem.Configuration
 {
-    public class LoginOptions
+    public record LoginOptions
     {
         [Required]
-        public string? Password { get; set; }
+        public string? Password { get; init; }
     }
 }

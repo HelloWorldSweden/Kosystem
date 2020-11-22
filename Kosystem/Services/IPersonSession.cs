@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Kosystem.Shared;
 
 namespace Kosystem.Services
@@ -10,7 +11,7 @@ namespace Kosystem.Services
 
         PersonModel? TryGetCurrentPerson();
 
-        bool TryGetCurrentPerson(out PersonModel person);
+        bool TryGetCurrentPerson([NotNullWhen(true)] out PersonModel? person);
 
         PersonModel SetCurrentPerson(string name);
     }

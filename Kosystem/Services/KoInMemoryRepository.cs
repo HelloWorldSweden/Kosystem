@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using Kosystem.Services;
 using Kosystem.Shared;
 using Kosystem.Utility;
@@ -63,9 +64,9 @@ namespace Kosystem.States
         public bool DequeuePerson(int personId)
         {
             var person = FindPerson(personId);
-            if (person.HasValue && person.Value.IsEnqueued)
+            if (person?.IsEnqueued is true)
             {
-                return _people.TryUpdate(personId, person.Value.AsDequeued(), person);
+                return _people.TryUpdate(personId, person.AsDequeued(), person);
             }
 
             return false;
@@ -74,9 +75,9 @@ namespace Kosystem.States
         public bool EnqueuePerson(int personId)
         {
             var person = FindPerson(personId);
-            if (person.HasValue && !person.Value.IsEnqueued)
+            if (person?.IsEnqueued is false)
             {
-                return _people.TryUpdate(personId, person.Value.AsEnqueued(DateTime.Now), person);
+                return _people.TryUpdate(personId, person.AsEnqueued(DateTime.Now), person);
             }
 
             return false;
@@ -88,14 +89,7 @@ namespace Kosystem.States
             {
                 var list = new List<PersonModel>(peopleInRoom.Count);
 
-                foreach (var personId in peopleInRoom)
-                {
-                    var person = FindPerson(personId);
-                    if (person.HasValue)
-                    {
-                        list.Add(person.Value);
-                    }
-                }
+                list.AddRange(peopleInRoom.Select(FindPerson).WhereNotNull());
 
                 return list;
             }
@@ -117,13 +111,7 @@ namespace Kosystem.States
         {
             var rooms = new List<RoomModel>(_rooms.Count);
 
-            foreach (var room in _rooms.Values)
-            {
-                if (room.HasValue)
-                {
-                    rooms.Add(room.Value);
-                }
-            }
+            rooms.AddRange(_rooms.Values.WhereNotNull());
 
             return rooms;
         }
@@ -141,13 +129,13 @@ namespace Kosystem.States
         public PersonModel? UpdatePerson(UpdatePersonModel patch)
         {
             var person = FindPerson(patch.Id);
-            if (!person.HasValue)
+            if (person is null)
             {
                 return null;
             }
 
-            PersonModel updatedPerson = person.Value.Update(patch);
-            if (_people.TryUpdate(person.Value.Id, updatedPerson, person))
+            PersonModel updatedPerson = person.Update(patch);
+            if (_people.TryUpdate(person.Id, updatedPerson, person))
             {
                 return updatedPerson;
             }
@@ -160,13 +148,13 @@ namespace Kosystem.States
         public RoomModel? UpdateRoom(UpdateRoomModel patch)
         {
             var room = FindRoom(patch.Id);
-            if (!room.HasValue)
+            if (room is null)
             {
                 return null;
             }
 
-            var updatedRoom = room.Value.Update(patch);
-            if (_rooms.TryUpdate(room.Value.Id, updatedRoom, room))
+            var updatedRoom = room.Update(patch);
+            if (_rooms.TryUpdate(room.Id, updatedRoom, room))
             {
                 return updatedRoom;
             }
@@ -177,7 +165,6 @@ namespace Kosystem.States
         }
 
         private int ClaimNextUniqueId<T>(ConcurrentDictionary<int, T?> dictionary, int maxAttempts = 64)
-            where T : struct
         {
             int id;
             int attempts = 0;
@@ -189,7 +176,7 @@ namespace Kosystem.States
                     throw new InvalidOperationException("Unable to generate unique ID. Perhaps there's too many existing items?");
                 }
             }
-            while (!dictionary.TryAdd(id, null!));
+            while (!dictionary.TryAdd(id, default));
 
             return id;
         }

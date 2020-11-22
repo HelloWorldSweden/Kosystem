@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Kosystem.ViewModels
 {
-    public class JoinRoomViewModel
+    public record JoinRoomViewModel
     {
         [Required]
         [RegularExpression(@"\s*#?\s*\d{1,4}\s*", ErrorMessage = "Room ID must be in the format '#1234'.")]

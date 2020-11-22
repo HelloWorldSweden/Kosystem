@@ -1,9 +1,9 @@
 @page "/{RoomId:int}"
 @inject IRoomRepository RoomRepository
 
-@if (_room.HasValue)
+@if (_room is not null)
 {
-    <Kosystem.Components.RoomComponent Room="_room.Value"/>
+    <Kosystem.Components.RoomComponent Room="_room"/>
 }
 
 @code {

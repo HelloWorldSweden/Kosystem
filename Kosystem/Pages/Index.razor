@@ -59,7 +59,7 @@
         }
 
         var room = RoomRepository.FindRoom(roomId);
-        if (!room.HasValue)
+        if (room is null)
         {
             roomAlert = $"Rum #{roomId:0000} finns inte.";
             hideRoomAlert = false;
@@ -67,7 +67,7 @@
         }
 
         var person = PersonSession.SetCurrentPerson(model.Name);
-        var result = RoomRepository.AddPersonToRoom(room.Value.Id, person.Id);
+        var result = RoomRepository.AddPersonToRoom(room.Id, person.Id);
 
         if (result is not AddResult.OK and not AddResult.AlreadyAdded)
         {
