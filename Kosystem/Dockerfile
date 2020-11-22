@@ -12,7 +12,7 @@ COPY ["Kosystem.Shared/Kosystem.Shared.csproj", "Kosystem.Shared/"]
 COPY ["Kosystem.Utility/Kosystem.Utility.csproj", "Kosystem.Utility/"]
 RUN dotnet restore "Kosystem/Kosystem.csproj"
 COPY . .
-WORKDIR "/src/Kosystem"
+WORKDIR /src/Kosystem
 RUN dotnet build "Kosystem.csproj" -c Release -o /app/build
 
 FROM build AS publish
