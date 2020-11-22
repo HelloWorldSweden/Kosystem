@@ -4,17 +4,17 @@ namespace Kosystem.Repository.EF
 {
     internal static class Mapper
     {
-        public static PersonModel ToPersonModel(this Person person)
+        public static PersonModel ToPersonModel(this DbPerson person)
         {
             return new PersonModel(person.Id, person.Name)
             {
-                RoomId = person.Room?.Id,
+                RoomId = person.Room?.DisplayId,
             };
         }
 
-        public static RoomModel ToRoomModel(this Room room)
+        public static RoomModel ToRoomModel(this DbRoom room)
         {
-            return new RoomModel(room.Id, room.Name);
+            return new RoomModel(room.DisplayId, room.Name);
         }
     }
 }

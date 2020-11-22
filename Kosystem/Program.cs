@@ -6,13 +6,11 @@ namespace Kosystem
 {
     public class Program
     {
-        private readonly string[] _args;
         private readonly IHost _host;
 
         public Program(string[] args)
         {
-            _args = args;
-            _host = CreateHostBuilder().Build();
+            _host = CreateHostBuilder(args).Build();
         }
 
         public static void Main(string[] args)
@@ -20,17 +18,17 @@ namespace Kosystem
             new Program(args).Run();
         }
 
-        private void Run()
-        {
-            _host.CreateKosystemEfDbIfNotExists();
-            _host.Run();
-        }
-
-        private IHostBuilder CreateHostBuilder() =>
-            Host.CreateDefaultBuilder(_args)
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
                 });
+
+        private void Run()
+        {
+            _host.ApplyKosystemMigration();
+            _host.Run();
+        }
     }
 }

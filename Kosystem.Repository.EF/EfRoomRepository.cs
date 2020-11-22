@@ -11,6 +11,7 @@ namespace Kosystem.Repository.EF
     {
         private readonly IDbContextFactory<KosystemDbContext> _contextFactory;
         private readonly ILogger<EfRoomRepository> _logger;
+        private readonly Random _random = new Random();
 
         public EfRoomRepository(
             IDbContextFactory<KosystemDbContext> contextFactory,
@@ -20,11 +21,11 @@ namespace Kosystem.Repository.EF
             _logger = logger;
         }
 
-        public AddResult AddPersonToRoom(int roomId, int personId)
+        public AddResult AddPersonToRoom(int roomId, long personId)
         {
             using var ctx = _contextFactory.CreateDbContext();
 
-            var person = new Person { Id = personId };
+            var person = new DbPerson { Id = personId };
             ctx.Attach(person);
             person.RoomId = roomId;
 
@@ -43,11 +44,34 @@ namespace Kosystem.Repository.EF
 
         public RoomModel CreateRoom(NewRoomModel newRoom)
         {
-            var room = new Room { Name = newRoom.Name };
+            const int TRIES = 100;
+            var attempt = 0;
+            var room = new DbRoom { Name = newRoom.Name };
             using var ctx = _contextFactory.CreateDbContext();
             ctx.Rooms.Add(room);
-            ctx.SaveChanges();
-            return room.ToRoomModel();
+
+            while (true)
+            {
+                try
+                {
+                    lock (_random)
+                    {
+                        room.DisplayId = _random.Next(1, 10_000);
+                    }
+
+                    ctx.SaveChanges();
+                    return room.ToRoomModel();
+                }
+                catch (Exception e) when (attempt < TRIES)
+                {
+                    _logger.LogWarning(e, $"Failed to create room by display ID '{room.DisplayId}', attempt {attempt}/{TRIES}. Will try again, it may have just been due to ID collision.");
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError(e, $"Failed to create room by display ID '{room.DisplayId}', attempt {attempt}/{TRIES}. Will not try again.");
+                    throw;
+                }
+            }
         }
 
         public RemoveResult DeleteRoom(int roomId)
@@ -55,7 +79,7 @@ namespace Kosystem.Repository.EF
             try
             {
                 using var ctx = _contextFactory.CreateDbContext();
-                var room = new Room { Id = roomId };
+                var room = new DbRoom { DisplayId = roomId };
 
                 ctx.Attach(room);
                 ctx.Remove(room);
@@ -81,7 +105,7 @@ namespace Kosystem.Repository.EF
         public RoomModel? FindRoom(int roomId)
         {
             using var ctx = _contextFactory.CreateDbContext();
-            return ctx.Rooms.FirstOrDefault(o => o.Id == roomId)?.ToRoomModel();
+            return ctx.Rooms.FirstOrDefault(o => o.DisplayId == roomId)?.ToRoomModel();
         }
 
         public IReadOnlyCollection<RoomModel> FindRooms()
@@ -90,11 +114,11 @@ namespace Kosystem.Repository.EF
             return ctx.Rooms.Select(o => o.ToRoomModel()).ToArray();
         }
 
-        public RemoveResult RemovePersonFromRoom(int roomId, int personId)
+        public RemoveResult RemovePersonFromRoom(int roomId, long personId)
         {
             using var ctx = _contextFactory.CreateDbContext();
 
-            var person = new Person { Id = personId };
+            var person = new DbPerson { Id = personId };
             ctx.Attach(person);
             person.RoomId = null;
 
@@ -114,7 +138,7 @@ namespace Kosystem.Repository.EF
         public RoomModel? UpdateRoom(UpdateRoomModel patch)
         {
             using var ctx = _contextFactory.CreateDbContext();
-            var room = ctx.Rooms.FirstOrDefault(o => o.Id == patch.Id);
+            var room = ctx.Rooms.FirstOrDefault(o => o.DisplayId == patch.Id);
 
             if (room is null)
             {

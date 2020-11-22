@@ -15,9 +15,9 @@ namespace Kosystem.Repository
 
         IReadOnlyCollection<RoomModel> FindRooms();
 
-        AddResult AddPersonToRoom(int roomId, int personId);
+        AddResult AddPersonToRoom(int roomId, long personId);
 
-        RemoveResult RemovePersonFromRoom(int roomId, int personId);
+        RemoveResult RemovePersonFromRoom(int roomId, long personId);
 
         IReadOnlyCollection<PersonModel> FindPeopleInRoom(int roomId);
     }

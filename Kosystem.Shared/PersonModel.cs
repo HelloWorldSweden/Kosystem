@@ -2,7 +2,7 @@ using System;
 
 namespace Kosystem.Shared
 {
-    public record PersonModel(int Id, string Name)
+    public record PersonModel(long Id, string Name)
     {
         public int? RoomId { get; init; }
 

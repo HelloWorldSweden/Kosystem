@@ -6,14 +6,14 @@ namespace Kosystem.Repository
     {
         PersonModel CreatePerson(NewPersonModel newPerson);
 
-        RemoveResult DeletePerson(int personId);
+        RemoveResult DeletePerson(long personId);
 
         PersonModel? UpdatePerson(UpdatePersonModel patch);
 
-        PersonModel? FindPerson(int personId);
+        PersonModel? FindPerson(long personId);
 
-        AddResult EnqueuePerson(int personId);
+        AddResult EnqueuePerson(long personId);
 
-        RemoveResult DequeuePerson(int personId);
+        RemoveResult DequeuePerson(long personId);
     }
 }

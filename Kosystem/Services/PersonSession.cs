@@ -9,7 +9,7 @@ namespace Kosystem.Services
     {
         private readonly IPersonRepository _personRepository;
         private bool _disposedValue;
-        private int? _registeredPersonId;
+        private long? _registeredPersonId;
 
         public bool IsRegistered => _registeredPersonId.HasValue;
 

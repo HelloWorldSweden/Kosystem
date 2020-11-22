@@ -21,7 +21,7 @@ namespace Kosystem.Repository.EF
 
         public PersonModel CreatePerson(NewPersonModel newPerson)
         {
-            var person = new Person
+            var person = new DbPerson
             {
                 Name = newPerson.Name
             };
@@ -33,12 +33,12 @@ namespace Kosystem.Repository.EF
             return person.ToPersonModel();
         }
 
-        public RemoveResult DeletePerson(int personId)
+        public RemoveResult DeletePerson(long personId)
         {
             try
             {
                 using var ctx = _contextFactory.CreateDbContext();
-                var person = new Person { Id = personId };
+                var person = new DbPerson { Id = personId };
                 ctx.Attach(person);
                 ctx.Remove(person);
 
@@ -53,7 +53,7 @@ namespace Kosystem.Repository.EF
             }
         }
 
-        public RemoveResult DequeuePerson(int personId)
+        public RemoveResult DequeuePerson(long personId)
         {
             try
             {
@@ -78,7 +78,7 @@ namespace Kosystem.Repository.EF
             }
         }
 
-        public AddResult EnqueuePerson(int personId)
+        public AddResult EnqueuePerson(long personId)
         {
             try
             {
@@ -103,7 +103,7 @@ namespace Kosystem.Repository.EF
             }
         }
 
-        public PersonModel? FindPerson(int personId)
+        public PersonModel? FindPerson(long personId)
         {
             using var ctx = _contextFactory.CreateDbContext();
             return ctx.People.FirstOrDefault(o => o.Id == personId)?.ToPersonModel();
