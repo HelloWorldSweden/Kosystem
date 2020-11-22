@@ -6,14 +6,14 @@ namespace Kosystem.Services
     {
         PersonModel CreatePerson(NewPersonModel newPerson);
 
-        bool DeletePerson(int personId);
+        RemoveResult DeletePerson(int personId);
 
         PersonModel? UpdatePerson(UpdatePersonModel patch);
 
         PersonModel? FindPerson(int personId);
 
-        bool EnqueuePerson(int personId);
+        AddResult EnqueuePerson(int personId);
 
-        bool DequeuePerson(int personId);
+        RemoveResult DequeuePerson(int personId);
     }
 }
