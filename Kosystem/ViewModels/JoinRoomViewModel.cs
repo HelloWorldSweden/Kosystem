@@ -2,13 +2,13 @@
 
 namespace Kosystem.ViewModels
 {
-    public class JoinRoomViewModel
+    public record JoinRoomViewModel
     {
         [Required]
-        public int? RoomId { get; set; }
+        public int? RoomId { get; init; }
 
         [Required]
         [StringLength(50, ErrorMessage = "Name is too long.")]
-        public string? Name { get; set; }
+        public string? Name { get; init; }
     }
 }
