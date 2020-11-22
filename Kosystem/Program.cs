@@ -1,17 +1,33 @@
+using Kosystem.Repository.EF;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
 namespace Kosystem
 {
-    public static class Program
+    public class Program
     {
-        public static void Main(string[] args)
+        private readonly string[] _args;
+        private readonly IHost _host;
+
+        public Program(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            _args = args;
+            _host = CreateHostBuilder().Build();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
+        public static void Main(string[] args)
+        {
+            new Program(args).Run();
+        }
+
+        private void Run()
+        {
+            _host.CreateKosystemEfDbIfNotExists();
+            _host.Run();
+        }
+
+        private IHostBuilder CreateHostBuilder() =>
+            Host.CreateDefaultBuilder(_args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
