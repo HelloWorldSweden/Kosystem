@@ -19,3 +19,5 @@
 **/values.dev.yaml
 **/.toolstarget
 **/*.db
+**/*.db-shm
+**/*.db-wal
