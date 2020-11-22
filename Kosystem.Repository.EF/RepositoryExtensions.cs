@@ -1,19 +1,16 @@
-using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace Kosystem.Repository.EF
 {
     public static class RepositoryExtensions
     {
         public static IServiceCollection AddKosystemEfRepository(
-            this IServiceCollection services,
-            Action<DbContextOptionsBuilder> optionsAction)
+            this IServiceCollection services)
         {
             return services
-                .AddDbContextFactory<KosystemDbContext>(optionsAction)
+                .AddDbContextFactory<KosystemDbContext>()
                 .AddSingleton<IPersonRepository, EfPersonRepository>()
                 .AddSingleton<IRoomRepository, EfRoomRepository>();
         }
@@ -21,14 +18,9 @@ namespace Kosystem.Repository.EF
         public static IHost CreateKosystemEfDbIfNotExists(this IHost host)
         {
             using var scope = host.Services.CreateScope();
-            var services = scope.ServiceProvider;
+            using var ctx = new KosystemDbContext();
 
-            var options = services.GetRequiredService<DbContextOptions<KosystemDbContext>>();
-            var optionsBuilder = new DbContextOptionsBuilder<KosystemDbContext>(options)
-                .UseLoggerFactory(services.GetRequiredService<ILoggerFactory>());
-
-            using var ctx = new KosystemDbContext(optionsBuilder.Options);
-            ctx.Database.EnsureCreated();
+            ctx.Database.Migrate();
 
             return host;
         }
