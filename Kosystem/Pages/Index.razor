@@ -8,9 +8,9 @@
 <EditForm Model="model" OnValidSubmit="HandleValidSubmit">
     <DataAnnotationsValidator />
 
-    <input class="alert-state" id="unknown-room-alert" type="checkbox" @bind="hideRoomUnkownAlert" />
+    <input class="alert-state" id="unknown-room-alert" type="checkbox" @bind="hideRoomAlert" />
     <div class="alert alert-danger dismissible">
-        Rum #@unknownRoomId.ToString("0000") finns inte.
+        <span>@roomAlert</span>
         <label class="btn-close" for="unknown-room-alert">X</label>
     </div>
 
@@ -18,7 +18,7 @@
         <div class="col sm-4">
             <div class="form-group">
                 <label for="roomNumber">Rumsnumret</label>
-                <InputNumber class="input-block border-2" id="roomNumber" placeholder="0000" @bind-Value="model.RoomId" />
+                <InputText class="input-block border-2" id="roomNumber" placeholder="#0000" @bind-Value="model.RoomId" />
                 <ValidationMessage For="() => model.RoomId" />
             </div>
         </div>
@@ -41,31 +41,39 @@
 @code {
     private readonly JoinRoomViewModel model = new JoinRoomViewModel();
 
-    private int unknownRoomId;
-    private bool hideRoomUnkownAlert = true;
+    private string? roomAlert;
+    private bool hideRoomAlert = true;
 
     void HandleValidSubmit()
     {
-        if (model.RoomId is null || model.Name is null)
+        if (string.IsNullOrWhiteSpace(model.RoomId) || model.Name is null)
         {
             return;
         }
 
-        var room = RoomRepository.FindRoom(model.RoomId.Value);
+        if (!RoomIdParser.TryParse(model.RoomId, out var roomId))
+        {
+            roomAlert = $"Värde '{model.RoomId?.Trim()}' är inte ett giltigt rumsnummer.";
+            hideRoomAlert = false;
+            return;
+        }
+
+        var room = RoomRepository.FindRoom(roomId);
         if (room is null)
         {
-            unknownRoomId = model.RoomId.Value;
-            hideRoomUnkownAlert = false;
+            roomAlert = $"Rum #{roomId:0000} finns inte.";
+            hideRoomAlert = false;
             return;
         }
 
         var person = PersonSession.SetCurrentPerson(model.Name);
-        var success = RoomRepository.AddPersonToRoom(room.Id, person.Id);
+        var result = RoomRepository.AddPersonToRoom(room.Id, person.Id);
 
-        if (!success)
+        if (result is not AddResult.OK and not AddResult.AlreadyAdded)
         {
-            unknownRoomId = model.RoomId.Value;
-            hideRoomUnkownAlert = false;
+            roomAlert = $"Kunde inte lägga till dig i rum #{roomId:0000}. Okänt fel...";
+            hideRoomAlert = false;
+            return;
         }
 
         NavigationManager.NavigateTo($"/{model.RoomId}");

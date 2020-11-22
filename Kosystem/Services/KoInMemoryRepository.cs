@@ -17,10 +17,12 @@ namespace Kosystem.States
         private readonly ConcurrentDictionary<int, PersonModel?> _people = new ConcurrentDictionary<int, PersonModel?>();
         private readonly ConcurrentDictionary<int, ConcurrentHashSet<int>> _peoplePerRoom = new ConcurrentDictionary<int, ConcurrentHashSet<int>>();
 
-        public bool AddPersonToRoom(int roomId, int personId)
+        public AddResult AddPersonToRoom(int roomId, int personId)
         {
             var peopleInRoom = _peoplePerRoom.GetOrAdd(roomId, _ => new ConcurrentHashSet<int>());
-            return peopleInRoom.Add(personId);
+            return peopleInRoom.Add(personId)
+                ? AddResult.OK
+                : AddResult.AlreadyAdded;
         }
 
         public PersonModel CreatePerson(NewPersonModel newPerson)
@@ -43,12 +45,14 @@ namespace Kosystem.States
             return room;
         }
 
-        public bool DeletePerson(int personId)
+        public RemoveResult DeletePerson(int personId)
         {
-            return _people.TryRemove(personId, out _);
+            return _people.TryRemove(personId, out _)
+                ? RemoveResult.OK
+                : RemoveResult.AlreadyRemoved;
         }
 
-        public bool DeleteRoom(int roomId)
+        public RemoveResult DeleteRoom(int roomId)
         {
             var peopleInRoom = FindPeopleInRoom(roomId);
 
@@ -58,29 +62,35 @@ namespace Kosystem.States
             }
 
             _peoplePerRoom.TryRemove(roomId, out _);
-            return _rooms.TryRemove(roomId, out _);
+            return _rooms.TryRemove(roomId, out _)
+                ? RemoveResult.OK
+                : RemoveResult.AlreadyRemoved;
         }
 
-        public bool DequeuePerson(int personId)
+        public RemoveResult DequeuePerson(int personId)
         {
             var person = FindPerson(personId);
             if (person?.IsEnqueued is true)
             {
-                return _people.TryUpdate(personId, person.AsDequeued(), person);
+                return _people.TryUpdate(personId, person.AsDequeued(), person)
+                    ? RemoveResult.OK
+                    : RemoveResult.AlreadyRemoved;
             }
 
-            return false;
+            return RemoveResult.AlreadyRemoved;
         }
 
-        public bool EnqueuePerson(int personId)
+        public AddResult EnqueuePerson(int personId)
         {
             var person = FindPerson(personId);
             if (person?.IsEnqueued is false)
             {
-                return _people.TryUpdate(personId, person.AsEnqueued(DateTime.Now), person);
+                return _people.TryUpdate(personId, person.AsEnqueued(DateTime.Now), person)
+                    ? AddResult.OK
+                    : AddResult.AlreadyAdded;
             }
 
-            return false;
+            return AddResult.AlreadyAdded;
         }
 
         public IReadOnlyCollection<PersonModel> FindPeopleInRoom(int roomId)
@@ -116,14 +126,16 @@ namespace Kosystem.States
             return rooms;
         }
 
-        public bool RemovePersonFromRoom(int roomId, int personId)
+        public RemoveResult RemovePersonFromRoom(int roomId, int personId)
         {
             if (_peoplePerRoom.TryGetValue(roomId, out var peopleInRoom))
             {
-                return peopleInRoom.Remove(personId);
+                return peopleInRoom.Remove(personId)
+                    ? RemoveResult.OK
+                    : RemoveResult.AlreadyRemoved;
             }
 
-            return false;
+            return RemoveResult.AlreadyRemoved;
         }
 
         public PersonModel? UpdatePerson(UpdatePersonModel patch)
