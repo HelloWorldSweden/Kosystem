@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Kosystem.Shared;
 
-namespace Kosystem.Services
+namespace Kosystem.Repository
 {
     public interface IRoomRepository
     {

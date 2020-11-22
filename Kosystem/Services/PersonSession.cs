@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
+using Kosystem.Repository;
 using Kosystem.Shared;
 
 namespace Kosystem.Services

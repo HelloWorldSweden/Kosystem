@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Kosystem.Repository\Kosystem.Repository.csproj" />
     <ProjectReference Include="..\Kosystem.Shared\Kosystem.Shared.csproj" />
     <ProjectReference Include="..\Kosystem.Utility\Kosystem.Utility.csproj" />
   </ItemGroup>

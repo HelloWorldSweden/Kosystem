@@ -2,11 +2,10 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using Kosystem.Services;
 using Kosystem.Shared;
 using Kosystem.Utility;
 
-namespace Kosystem.States
+namespace Kosystem.Repository
 {
     public class KoInMemoryRepository : IRoomRepository, IPersonRepository
     {

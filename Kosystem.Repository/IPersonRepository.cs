@@ -1,6 +1,6 @@
 using Kosystem.Shared;
 
-namespace Kosystem.Services
+namespace Kosystem.Repository
 {
     public interface IPersonRepository
     {

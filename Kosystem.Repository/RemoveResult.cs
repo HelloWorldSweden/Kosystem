@@ -1,4 +1,4 @@
-﻿namespace Kosystem.Services
+namespace Kosystem.Repository
 {
     public enum RemoveResult
     {
