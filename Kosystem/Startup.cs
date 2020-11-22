@@ -1,9 +1,10 @@
 using Kosystem.Configuration;
+using Kosystem.Repository.EF;
 using Kosystem.Services;
-using Kosystem.States;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -32,14 +33,19 @@ namespace Kosystem
                 return provider;
             });
 
-            var repo = new KoInMemoryRepository();
-            services.AddSingleton<IPersonRepository>(repo);
-            services.AddSingleton<IRoomRepository>(repo);
             services.AddScoped<IPersonSession, PersonSession>();
 
             services.AddOptions<LoginOptions>()
                 .Bind(Configuration.GetSection("Login"))
                 .ValidateDataAnnotations();
+
+            services.AddKosystemEfRepository(opt =>
+            {
+                opt.UseSqlite($"DataSource={nameof(Kosystem)}.db", sqliteOpt =>
+                {
+                    sqliteOpt.MigrationsAssembly(nameof(Kosystem));
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,13 +1,21 @@
+using Kosystem.Repository.EF;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
 namespace Kosystem
 {
-    public static class Program
+    public class Program
     {
+        private readonly IHost _host;
+
+        public Program(string[] args)
+        {
+            _host = CreateHostBuilder(args).Build();
+        }
+
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            new Program(args).Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -16,5 +24,11 @@ namespace Kosystem
                 {
                     webBuilder.UseStartup<Startup>();
                 });
+
+        private void Run()
+        {
+            _host.ApplyKosystemMigration();
+            _host.Run();
+        }
     }
 }

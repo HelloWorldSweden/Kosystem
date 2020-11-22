@@ -2,19 +2,19 @@ using System;
 
 namespace Kosystem.Shared
 {
-    public record PersonModel(int Id, string Name)
+    public record PersonModel(long Id, string Name)
     {
-        public int RoomId { get; init; } = -1;
+        public int? RoomId { get; init; }
 
         public DateTime? EnqueuedAt { get; init; }
 
-        public bool IsInRoom => RoomId > 0;
+        public bool IsInRoom => RoomId.HasValue;
 
         public bool IsEnqueued => EnqueuedAt.HasValue;
 
         public PersonModel WithoutRoom()
         {
-            return this with { RoomId = -1 };
+            return this with { RoomId = null };
         }
 
         public PersonModel AsEnqueued(DateTime enqueuedAt)

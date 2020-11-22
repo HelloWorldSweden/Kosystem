@@ -9,11 +9,18 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kosystem.Shared", "Kosystem
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{54CD7037-41CB-4A42-8890-01B92B0F6F6B}"
 	ProjectSection(SolutionItems) = preProject
+		.dockerignore = .dockerignore
 		.editorconfig = .editorconfig
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
 		Directory.Build.props = Directory.Build.props
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kosystem.Utility", "Kosystem.Utility\Kosystem.Utility.csproj", "{6D57BDE5-3C39-4650-A68A-DA3832781A7A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kosystem.Repository", "Kosystem.Repository\Kosystem.Repository.csproj", "{51BC21B9-074B-4069-820D-7E4A15AAC0E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kosystem.Repository.EF", "Kosystem.Repository.EF\Kosystem.Repository.EF.csproj", "{7348D125-CC0C-4F7D-85E7-830C57659A59}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +40,14 @@ Global
 		{6D57BDE5-3C39-4650-A68A-DA3832781A7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6D57BDE5-3C39-4650-A68A-DA3832781A7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6D57BDE5-3C39-4650-A68A-DA3832781A7A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51BC21B9-074B-4069-820D-7E4A15AAC0E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51BC21B9-074B-4069-820D-7E4A15AAC0E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51BC21B9-074B-4069-820D-7E4A15AAC0E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51BC21B9-074B-4069-820D-7E4A15AAC0E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7348D125-CC0C-4F7D-85E7-830C57659A59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7348D125-CC0C-4F7D-85E7-830C57659A59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7348D125-CC0C-4F7D-85E7-830C57659A59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7348D125-CC0C-4F7D-85E7-830C57659A59}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

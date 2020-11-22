@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
+using Kosystem.Repository;
 using Kosystem.Shared;
 
 namespace Kosystem.Services
@@ -8,7 +9,7 @@ namespace Kosystem.Services
     {
         private readonly IPersonRepository _personRepository;
         private bool _disposedValue;
-        private int? _registeredPersonId;
+        private long? _registeredPersonId;
 
         public bool IsRegistered => _registeredPersonId.HasValue;
 
@@ -76,7 +77,7 @@ namespace Kosystem.Services
                     var updatedPerson = _personRepository.UpdatePerson(new UpdatePersonModel(person.Id, name));
                     if (updatedPerson is not null)
                     {
-                        person = updatedPerson;
+                        return updatedPerson;
                     }
                     else
                     {
