@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Kosystem.ViewModels
 {
-    public class LoginViewModel
+    public record LoginViewModel
     {
         [Required]
         public string? Password { get; set; }

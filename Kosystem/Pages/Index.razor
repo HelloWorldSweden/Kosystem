@@ -52,7 +52,7 @@
         }
 
         var room = RoomRepository.FindRoom(model.RoomId.Value);
-        if (!room.HasValue)
+        if (room is null)
         {
             unknownRoomId = model.RoomId.Value;
             hideRoomUnkownAlert = false;
@@ -60,7 +60,7 @@
         }
 
         var person = PersonSession.SetCurrentPerson(model.Name);
-        var success = RoomRepository.AddPersonToRoom(room.Value.Id, person.Id);
+        var success = RoomRepository.AddPersonToRoom(room.Id, person.Id);
 
         if (!success)
         {

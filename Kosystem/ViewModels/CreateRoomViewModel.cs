@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Kosystem.ViewModels
 {
-    public class CreateRoomViewModel
+    public record CreateRoomViewModel
     {
         [Required]
         [MaxLength(64, ErrorMessage = "Name is too long.")]

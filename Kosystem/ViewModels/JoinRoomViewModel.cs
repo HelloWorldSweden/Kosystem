@@ -1,8 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace Kosystem.ViewModels
 {
-    public class JoinRoomViewModel
+    public record JoinRoomViewModel
     {
         [Required]
         public int? RoomId { get; set; }

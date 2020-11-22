@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Kosystem.Shared;
 
 namespace Kosystem.Services
@@ -38,7 +39,7 @@ namespace Kosystem.Services
             return _personRepository.FindPerson(_registeredPersonId.Value);
         }
 
-        public bool TryGetCurrentPerson(out PersonModel person)
+        public bool TryGetCurrentPerson([NotNullWhen(true)] out PersonModel? person)
         {
             if (!_registeredPersonId.HasValue)
             {
@@ -47,13 +48,13 @@ namespace Kosystem.Services
             }
 
             var possiblyPerson = _personRepository.FindPerson(_registeredPersonId.Value);
-            if (!possiblyPerson.HasValue)
+            if (possiblyPerson is null)
             {
                 person = default;
                 return false;
             }
 
-            person = possiblyPerson.Value;
+            person = possiblyPerson;
             return true;
         }
 
@@ -73,9 +74,9 @@ namespace Kosystem.Services
                 if (!person.Name.Equals(name, StringComparison.Ordinal))
                 {
                     var updatedPerson = _personRepository.UpdatePerson(new UpdatePersonModel(person.Id, name));
-                    if (updatedPerson.HasValue)
+                    if (updatedPerson is not null)
                     {
-                        person = updatedPerson.Value;
+                        person = updatedPerson;
                     }
                     else
                     {
