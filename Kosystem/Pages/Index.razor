@@ -44,6 +44,12 @@
     private string? roomAlert;
     private bool hideRoomAlert = true;
 
+    protected override void OnInitialized()
+    {
+        var currentPerson = PersonSession.TryGetCurrentPerson();
+        model.Name = currentPerson?.Name;
+    }
+
     void HandleValidSubmit()
     {
         if (string.IsNullOrWhiteSpace(model.RoomId) || model.Name is null)
