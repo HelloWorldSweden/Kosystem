@@ -33,7 +33,18 @@
 
     <div class="row flex-center">
         <div class="sm-4 col">
-            <button class="btn-large border-4" type="submit">Gå med rum</button>
+            <button class="btn-large border-4" type="submit">
+                @if (model.RoomId is not null
+                    && previousRoomId.HasValue
+                    && RoomIdParser.RoomIdEquals(model.RoomId, previousRoomId.Value))
+                {
+                    <text>Gå tillbaka till rum</text>
+                }
+                else
+                {
+                    <text>Gå med rum</text>
+                }
+            </button>
         </div>
     </div>
 </EditForm>
@@ -43,11 +54,20 @@
 
     private string? roomAlert;
     private bool hideRoomAlert = true;
+    private int? previousRoomId;
 
     protected override void OnInitialized()
     {
         var currentPerson = PersonSession.TryGetCurrentPerson();
-        model.Name = currentPerson?.Name;
+        if (currentPerson is not null)
+        {
+            model.Name = currentPerson.Name;
+            if (currentPerson.IsInRoom)
+            {
+                model.RoomId = $"#{currentPerson.RoomId:0000}";
+                previousRoomId = currentPerson.RoomId;
+            }
+        }
     }
 
     void HandleValidSubmit()
@@ -67,7 +87,9 @@
         var room = RoomRepository.FindRoom(roomId);
         if (room is null)
         {
-            roomAlert = $"Rum #{roomId:0000} finns inte.";
+            roomAlert = previousRoomId == roomId
+                ? $"Rum #{roomId:0000} finns inte längre."
+                : $"Rum #{roomId:0000} finns inte.";
             hideRoomAlert = false;
             return;
         }
@@ -82,6 +104,6 @@
             return;
         }
 
-        NavigationManager.NavigateTo($"/{model.RoomId}");
+        NavigationManager.NavigateTo($"/{roomId:0000}");
     }
 }

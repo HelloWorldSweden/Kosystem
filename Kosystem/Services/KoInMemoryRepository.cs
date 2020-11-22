@@ -20,9 +20,25 @@ namespace Kosystem.States
         public AddResult AddPersonToRoom(int roomId, int personId)
         {
             var peopleInRoom = _peoplePerRoom.GetOrAdd(roomId, _ => new ConcurrentHashSet<int>());
-            return peopleInRoom.Add(personId)
-                ? AddResult.OK
-                : AddResult.AlreadyAdded;
+            if (!peopleInRoom.Add(personId))
+            {
+                return AddResult.AlreadyAdded;
+            }
+
+            if (!_people.TryGetValue(personId, out var person) || person is null)
+            {
+                RemovePersonFromRoom(roomId, personId);
+                return AddResult.UnableToAdd;
+            }
+
+            var newPerson = person with { RoomId = roomId };
+            if (!_people.TryUpdate(personId, newPerson, person))
+            {
+                RemovePersonFromRoom(roomId, personId);
+                return AddResult.UnableToAdd;
+            }
+
+            return AddResult.OK;
         }
 
         public PersonModel CreatePerson(NewPersonModel newPerson)
@@ -128,11 +144,24 @@ namespace Kosystem.States
 
         public RemoveResult RemovePersonFromRoom(int roomId, int personId)
         {
-            if (_peoplePerRoom.TryGetValue(roomId, out var peopleInRoom))
+            if (_peoplePerRoom.TryGetValue(roomId, out var peopleInRoom)
+                && peopleInRoom.Remove(personId))
             {
-                return peopleInRoom.Remove(personId)
-                    ? RemoveResult.OK
-                    : RemoveResult.AlreadyRemoved;
+                if (!_people.TryGetValue(personId, out var person)
+                    || person is null)
+                {
+                    RemovePersonFromRoom(roomId, personId);
+                    return RemoveResult.UnableToRemove;
+                }
+
+                var newPerson = person.WithoutRoom();
+                if (!_people.TryUpdate(personId, newPerson, person))
+                {
+                    RemovePersonFromRoom(roomId, personId);
+                    return RemoveResult.UnableToRemove;
+                }
+
+                return RemoveResult.OK;
             }
 
             return RemoveResult.AlreadyRemoved;

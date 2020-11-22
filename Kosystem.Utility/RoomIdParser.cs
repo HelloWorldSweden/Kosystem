@@ -19,5 +19,18 @@ namespace Kosystem.Utility
 
             return int.TryParse(idGroup.Value, out roomId);
         }
+
+        public static bool RoomIdEquals(string roomIdString, int roomId)
+        {
+            var match = _roomIdRegex.Match(roomIdString);
+            var idGroup = match.Groups[1];
+
+            if (match.Success is false || idGroup.Success is false)
+            {
+                return false;
+            }
+
+            return int.TryParse(idGroup.Value, out var id) && roomId == id;
+        }
     }
 }
