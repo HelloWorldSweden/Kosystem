@@ -5,6 +5,6 @@ namespace Kosystem.ViewModels
     public record LoginViewModel
     {
         [Required]
-        public string? Password { get; init; }
+        public string? Password { get; set; }
     }
 }

@@ -6,6 +6,6 @@ namespace Kosystem.ViewModels
     {
         [Required]
         [MaxLength(64, ErrorMessage = "Name is too long.")]
-        public string? Name { get; init; }
+        public string? Name { get; set; }
     }
 }
