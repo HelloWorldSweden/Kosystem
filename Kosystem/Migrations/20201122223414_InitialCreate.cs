@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Kosystem.Migrations
@@ -11,7 +11,7 @@ namespace Kosystem.Migrations
                 name: "Rooms",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "INTEGER PRIMARY KEY", nullable: false),
+                    Id = table.Column<long>(type: "INTEGER", nullable: false),
                     DisplayId = table.Column<int>(type: "INTEGER", nullable: false),
                     Name = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false)
                 },
@@ -24,7 +24,7 @@ namespace Kosystem.Migrations
                 name: "People",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "INTEGER PRIMARY KEY", nullable: false),
+                    Id = table.Column<long>(type: "INTEGER", nullable: false),
                     Name = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     EnqueuedAt = table.Column<DateTime>(type: "TEXT", nullable: true),
                     RoomId = table.Column<long>(type: "INTEGER", nullable: true)

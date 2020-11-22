@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace Kosystem
 {
@@ -42,8 +43,11 @@ namespace Kosystem
                 .ValidateDataAnnotations();
 
             var sqliteConnection = new SqliteConnection($"DataSource={nameof(Kosystem)}.db");
-            services.AddKosystemEfRepository(opt =>
+            services.AddKosystemEfRepository((srv, opt) =>
             {
+                opt.EnableSensitiveDataLogging();
+                opt.LogTo(System.Console.WriteLine);
+                opt.UseLoggerFactory(srv.GetRequiredService<ILoggerFactory>());
                 opt.UseSqlite(sqliteConnection, sqliteOpt =>
                 {
                     sqliteOpt.MigrationsAssembly(nameof(Kosystem));

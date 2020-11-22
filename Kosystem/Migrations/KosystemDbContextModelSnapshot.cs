@@ -19,7 +19,8 @@ namespace Kosystem.Migrations
             modelBuilder.Entity("Kosystem.Repository.EF.DbPerson", b =>
                 {
                     b.Property<long>("Id")
-                        .HasColumnType("INTEGER PRIMARY KEY");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime?>("EnqueuedAt")
                         .HasColumnType("TEXT");
@@ -42,7 +43,8 @@ namespace Kosystem.Migrations
             modelBuilder.Entity("Kosystem.Repository.EF.DbRoom", b =>
                 {
                     b.Property<long>("Id")
-                        .HasColumnType("INTEGER PRIMARY KEY");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("DisplayId")
                         .HasColumnType("INTEGER");

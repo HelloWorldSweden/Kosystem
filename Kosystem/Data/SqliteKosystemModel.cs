@@ -11,23 +11,14 @@ namespace Kosystem.Data
 
             modelBuilder.Entity<DbRoom>(entity =>
             {
-                entity.HasKey(o => o.Id);
-
                 entity.Property(o => o.Id)
-                    .HasColumnType("INTEGER PRIMARY KEY")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
             });
 
             modelBuilder.Entity<DbPerson>(entity =>
             {
-                entity.HasKey(o => o.Id);
-
                 entity.Property(o => o.Id)
-                    .HasColumnType("INTEGER PRIMARY KEY")
-                    .ValueGeneratedNever();
-
-                entity.Property(o => o.RoomId)
-                    .HasColumnType("INTEGER");
+                    .ValueGeneratedOnAdd();
             });
         }
     }

@@ -9,12 +9,19 @@ namespace Kosystem.Repository.EF
     {
         public static IServiceCollection AddKosystemEfRepository(
             this IServiceCollection services,
-            Action<DbContextOptionsBuilder> optionsAction)
+            Action<IServiceProvider, DbContextOptionsBuilder> optionsAction)
         {
             return services
                 .AddDbContextFactory<KosystemDbContext>(optionsAction)
                 .AddSingleton<IPersonRepository, EfPersonRepository>()
                 .AddSingleton<IRoomRepository, EfRoomRepository>();
+        }
+
+        public static IServiceCollection AddKosystemEfRepository(
+            this IServiceCollection services,
+            Action<DbContextOptionsBuilder> optionsAction)
+        {
+            return AddKosystemEfRepository(services, (_, opt) => optionsAction(opt));
         }
 
         public static IHost ApplyKosystemMigration(this IHost host)

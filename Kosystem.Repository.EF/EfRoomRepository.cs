@@ -44,7 +44,7 @@ namespace Kosystem.Repository.EF
 
         public RoomModel CreateRoom(NewRoomModel newRoom)
         {
-            const int TRIES = 100;
+            const int TRIES = 30;
             var attempt = 0;
             var room = new DbRoom { Name = newRoom.Name };
             using var ctx = _contextFactory.CreateDbContext();

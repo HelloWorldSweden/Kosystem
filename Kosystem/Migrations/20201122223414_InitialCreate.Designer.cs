@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Kosystem.Migrations
 {
     [DbContext(typeof(KosystemDbContext))]
-    [Migration("20201122213430_InitialCreate")]
+    [Migration("20201122223414_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,7 +21,8 @@ namespace Kosystem.Migrations
             modelBuilder.Entity("Kosystem.Repository.EF.DbPerson", b =>
                 {
                     b.Property<long>("Id")
-                        .HasColumnType("INTEGER PRIMARY KEY");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime?>("EnqueuedAt")
                         .HasColumnType("TEXT");
@@ -44,7 +45,8 @@ namespace Kosystem.Migrations
             modelBuilder.Entity("Kosystem.Repository.EF.DbRoom", b =>
                 {
                     b.Property<long>("Id")
-                        .HasColumnType("INTEGER PRIMARY KEY");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("DisplayId")
                         .HasColumnType("INTEGER");
