@@ -1,6 +1,14 @@
 @inject IRoomRepository RoomRepository
 
-<h1>#@Room.Id.ToString("0000") @Room.Name</h1>
+@if (Room is null)
+{
+    <h1>#N/A Rummet finns inte</h1>
+    <p>Rummet kanske har blivit borttaget, eller så har du länkats till fel rumsnummber.</p>
+}
+else
+{
+    <h1>#@Room.Id.ToString("0000") @Room.Name</h1>
+}
 
 @if (People?.Count > 0)
 {
@@ -16,12 +24,14 @@ else
 
 @code {
     [Parameter]
-    public RoomModel Room { get; set; }
+    public RoomModel? Room { get; set; }
 
     public IReadOnlyCollection<PersonModel>? People { get; set; }
 
     protected override void OnInitialized()
     {
-        RoomRepository.FindPeopleInRoom(Room.Id);
+        if (Room is not null){
+            RoomRepository.FindPeopleInRoom(Room.Id);
+        }
     }
 }
