@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Kosystem.Migrations
@@ -11,39 +11,42 @@ namespace Kosystem.Migrations
                 name: "Rooms",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "INTEGER", nullable: false),
+                    Id = table.Column<long>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
                     DisplayId = table.Column<int>(type: "INTEGER", nullable: false),
                     Name = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Rooms", x => x.Id);
+                    table.UniqueConstraint("AK_Rooms_DisplayId", x => x.DisplayId);
                 });
 
             migrationBuilder.CreateTable(
                 name: "People",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "INTEGER", nullable: false),
+                    Id = table.Column<long>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     EnqueuedAt = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    RoomId = table.Column<long>(type: "INTEGER", nullable: true)
+                    RoomDisplayId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_People", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_People_Rooms_RoomId",
-                        column: x => x.RoomId,
+                        name: "FK_People_Rooms_RoomDisplayId",
+                        column: x => x.RoomDisplayId,
                         principalTable: "Rooms",
-                        principalColumn: "Id",
+                        principalColumn: "DisplayId",
                         onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_People_RoomId",
+                name: "IX_People_RoomDisplayId",
                 table: "People",
-                column: "RoomId");
+                column: "RoomDisplayId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Rooms_DisplayId",

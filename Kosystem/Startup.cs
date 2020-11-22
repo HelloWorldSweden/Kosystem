@@ -1,16 +1,13 @@
 using Kosystem.Configuration;
-using Kosystem.Data;
 using Kosystem.Repository.EF;
 using Kosystem.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace Kosystem
 {
@@ -42,17 +39,12 @@ namespace Kosystem
                 .Bind(Configuration.GetSection("Login"))
                 .ValidateDataAnnotations();
 
-            var sqliteConnection = new SqliteConnection($"DataSource={nameof(Kosystem)}.db");
-            services.AddKosystemEfRepository((srv, opt) =>
+            services.AddKosystemEfRepository(opt =>
             {
-                opt.EnableSensitiveDataLogging();
-                opt.LogTo(System.Console.WriteLine);
-                opt.UseLoggerFactory(srv.GetRequiredService<ILoggerFactory>());
-                opt.UseSqlite(sqliteConnection, sqliteOpt =>
+                opt.UseSqlite($"DataSource={nameof(Kosystem)}.db", sqliteOpt =>
                 {
                     sqliteOpt.MigrationsAssembly(nameof(Kosystem));
                 });
-                opt.UseModel(new SqliteKosystemModel().CreateModel(opt.Options));
             });
         }
 
