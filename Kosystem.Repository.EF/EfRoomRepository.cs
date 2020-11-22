@@ -74,7 +74,7 @@ namespace Kosystem.Repository.EF
         public IReadOnlyCollection<PersonModel> FindPeopleInRoom(int roomId)
         {
             using var ctx = _contextFactory.CreateDbContext();
-            var people = ctx.People.Where(o => o.Room?.Id == roomId);
+            var people = ctx.People.Where(o => o.RoomId == roomId);
             return people.Select(o => o.ToPersonModel()).ToArray();
         }
 

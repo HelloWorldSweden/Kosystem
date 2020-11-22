@@ -1,17 +1,17 @@
-using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
 namespace Kosystem.Repository.EF
 {
     internal class KosystemDbContext : DbContext
     {
-        public IList<Person> People { get; init; } = new List<Person>();
-        public IList<Room> Rooms { get; init; } = new List<Room>();
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public KosystemDbContext(DbContextOptions options)
+            : base(options)
         {
-            optionsBuilder.UseSqlite("Data Source=Kosystem.db");
+
         }
+
+        public DbSet<Person> People { get; init; } = null!;
+        public DbSet<Room> Rooms { get; init; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

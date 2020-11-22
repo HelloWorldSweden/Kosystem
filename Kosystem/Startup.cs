@@ -4,6 +4,8 @@ using Kosystem.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -38,7 +40,8 @@ namespace Kosystem
                 .Bind(Configuration.GetSection("Login"))
                 .ValidateDataAnnotations();
 
-            services.AddKosystemEfRepository();
+            var sqliteConnection = new SqliteConnection("DataSource=Kosystem.db");
+            services.AddKosystemEfRepository(opt => opt.UseSqlite(sqliteConnection));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
