@@ -67,9 +67,9 @@
         }
 
         var person = PersonSession.SetCurrentPerson(model.Name);
-        var success = RoomRepository.AddPersonToRoom(room.Value.Id, person.Id);
+        var result = RoomRepository.AddPersonToRoom(room.Value.Id, person.Id);
 
-        if (!success)
+        if (result is not AddResult.OK and not AddResult.AlreadyAdded)
         {
             roomAlert = $"Kunde inte lägga till dig i rum #{roomId:0000}. Okänt fel...";
             hideRoomAlert = false;

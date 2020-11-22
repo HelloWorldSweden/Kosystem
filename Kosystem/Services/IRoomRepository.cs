@@ -7,7 +7,7 @@ namespace Kosystem.Services
     {
         RoomModel CreateRoom(NewRoomModel newRoom);
 
-        bool DeleteRoom(int roomId);
+        RemoveResult DeleteRoom(int roomId);
 
         RoomModel? UpdateRoom(UpdateRoomModel patch);
 
@@ -15,9 +15,9 @@ namespace Kosystem.Services
 
         IReadOnlyCollection<RoomModel> FindRooms();
 
-        bool AddPersonToRoom(int roomId, int personId);
+        AddResult AddPersonToRoom(int roomId, int personId);
 
-        bool RemovePersonFromRoom(int roomId, int personId);
+        RemoveResult RemovePersonFromRoom(int roomId, int personId);
 
         IReadOnlyCollection<PersonModel> FindPeopleInRoom(int roomId);
     }
