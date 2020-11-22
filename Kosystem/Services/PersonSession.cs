@@ -77,7 +77,7 @@ namespace Kosystem.Services
                     var updatedPerson = _personRepository.UpdatePerson(new UpdatePersonModel(person.Id, name));
                     if (updatedPerson is not null)
                     {
-                        person = updatedPerson;
+                        return updatedPerson;
                     }
                     else
                     {

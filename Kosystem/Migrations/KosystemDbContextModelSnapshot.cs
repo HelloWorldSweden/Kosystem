@@ -30,12 +30,12 @@ namespace Kosystem.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
-                    b.Property<long?>("RoomId")
+                    b.Property<int?>("RoomDisplayId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RoomId");
+                    b.HasIndex("RoomDisplayId");
 
                     b.ToTable("People");
                 });
@@ -66,7 +66,8 @@ namespace Kosystem.Migrations
                 {
                     b.HasOne("Kosystem.Repository.EF.DbRoom", "Room")
                         .WithMany("People")
-                        .HasForeignKey("RoomId")
+                        .HasForeignKey("RoomDisplayId")
+                        .HasPrincipalKey("DisplayId")
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Room");

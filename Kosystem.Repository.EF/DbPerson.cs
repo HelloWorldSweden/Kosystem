@@ -14,6 +14,6 @@ namespace Kosystem.Repository.EF
         public DateTime? EnqueuedAt { get; set; }
 
         public DbRoom? Room { get; set; }
-        public long? RoomId { get; set; }
+        public int? RoomDisplayId { get; set; }
     }
 }

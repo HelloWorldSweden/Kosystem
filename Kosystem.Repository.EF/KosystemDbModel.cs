@@ -24,6 +24,8 @@ namespace Kosystem.Repository.EF
 
                 entity.HasMany(o => o.People)
                     .WithOne(o => o.Room!)
+                    .HasForeignKey(o => o.RoomDisplayId)
+                    .HasPrincipalKey(o => o.DisplayId)
                     .OnDelete(DeleteBehavior.SetNull);
             });
 

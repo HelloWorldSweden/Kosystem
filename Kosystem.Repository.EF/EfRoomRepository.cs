@@ -27,7 +27,7 @@ namespace Kosystem.Repository.EF
 
             var person = new DbPerson { Id = personId };
             ctx.Attach(person);
-            person.RoomId = roomId;
+            person.RoomDisplayId = roomId;
 
             try
             {
@@ -98,7 +98,7 @@ namespace Kosystem.Repository.EF
         public IReadOnlyCollection<PersonModel> FindPeopleInRoom(int roomId)
         {
             using var ctx = _contextFactory.CreateDbContext();
-            var people = ctx.People.Where(o => o.RoomId == roomId);
+            var people = ctx.People.Where(o => o.RoomDisplayId == roomId);
             return people.Select(o => o.ToPersonModel()).ToArray();
         }
 
@@ -120,7 +120,7 @@ namespace Kosystem.Repository.EF
 
             var person = new DbPerson { Id = personId };
             ctx.Attach(person);
-            person.RoomId = null;
+            person.RoomDisplayId = null;
 
             try
             {
