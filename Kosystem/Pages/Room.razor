@@ -1,9 +1,15 @@
 @page "/{RoomId:int}"
 @inject IRoomRepository RoomRepository
+@inject IPersonSession PersonSession
 
 @if (_room is not null)
 {
-    <Kosystem.Components.RoomComponent Room="_room"/>
+    <Kosystem.Components.RoomComponent Room="_room" People="_people" />
+}
+else
+{
+    <h1>#N/A Rummet finns inte</h1>
+    <p>Rummet kanske har blivit borttaget, eller så har du länkats till fel rumsnummber.</p>
 }
 
 @code {
@@ -11,9 +17,22 @@
     public int RoomId { get; set; }
 
     private RoomModel? _room;
+    private IReadOnlyCollection<PersonModel>? _people;
 
     protected override void OnParametersSet()
     {
         _room = RoomRepository.FindRoom(RoomId);
+        if (PersonSession.TryGetCurrentPerson(out var person))
+        {
+            if (person.RoomId != RoomId)
+            {
+                RoomRepository.AddPersonToRoom(RoomId, person.Id);
+            }
+        }
+
+        if (_room is not null)
+        {
+            _people = RoomRepository.FindPeopleInRoom(RoomId);
+        }
     }
 }

@@ -1,5 +1,3 @@
-@inject IRoomRepository RoomRepository
-
 @if (Room is null)
 {
     <h1>#N/A Rummet finns inte</h1>
@@ -14,7 +12,7 @@ else
 {
     foreach (var person in People.OrderBy(o => o.EnqueuedAt).ThenBy(o => o.Name))
     {
-        <PersonComponent @key="person.Name" Person="person"/>
+        <PersonComponent @key="person.Id" Person="person"/>
     }
 }
 else
@@ -26,12 +24,6 @@ else
     [Parameter]
     public RoomModel? Room { get; set; }
 
+    [Parameter]
     public IReadOnlyCollection<PersonModel>? People { get; set; }
-
-    protected override void OnInitialized()
-    {
-        if (Room is not null){
-            RoomRepository.FindPeopleInRoom(Room.Id);
-        }
-    }
 }
