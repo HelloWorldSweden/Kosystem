@@ -94,16 +94,7 @@
             return;
         }
 
-        var person = PersonSession.SetCurrentPerson(model.Name);
-        var result = RoomRepository.AddPersonToRoom(room.Id, person.Id);
-
-        if (result is not AddResult.OK and not AddResult.AlreadyAdded)
-        {
-            roomAlert = $"Kunde inte lägga till dig i rum #{roomId:0000}. Okänt fel...";
-            hideRoomAlert = false;
-            return;
-        }
-
+        PersonSession.SetCurrentPerson(model.Name);
         NavigationManager.NavigateTo($"/{roomId:0000}");
     }
 }

@@ -2,15 +2,16 @@
 @inject IRoomRepository RoomRepository
 @inject IPersonSession PersonSession
 
-@if (_room is not null)
+@if (_roomAlert is not null)
 {
-    <Kosystem.Components.RoomComponent Room="_room" People="_people" />
+    <input class="alert-state" id="unknown-room-alert" type="checkbox" @bind="_hideRoomAlert" />
+    <div class="alert alert-danger dismissible">
+        <span>@_roomAlert</span>
+        <label class="btn-close" for="unknown-room-alert">X</label>
+    </div>
 }
-else
-{
-    <h1>#N/A Rummet finns inte</h1>
-    <p>Rummet kanske har blivit borttaget, eller så har du länkats till fel rumsnummber.</p>
-}
+
+<Kosystem.Components.RoomComponent Room="_room" People="_people" CurrentPerson="_currentPerson" />
 
 @code {
     [Parameter]
@@ -18,15 +19,30 @@ else
 
     private RoomModel? _room;
     private IReadOnlyCollection<PersonModel>? _people;
+    private PersonModel? _currentPerson;
+
+    private string? _roomAlert;
+    private bool _hideRoomAlert;
 
     protected override void OnParametersSet()
     {
         _room = RoomRepository.FindRoom(RoomId);
-        if (PersonSession.TryGetCurrentPerson(out var person))
+
+        if (_room is null) {
+            return;
+        }
+
+        if (PersonSession.TryGetCurrentPerson(out var person)
+            && person.RoomId != RoomId)
         {
-            if (person.RoomId != RoomId)
+            _currentPerson = person;
+            var result = RoomRepository.AddPersonToRoom(RoomId, _currentPerson.Id);
+
+            if (result is not AddResult.OK and not AddResult.AlreadyAdded)
             {
-                RoomRepository.AddPersonToRoom(RoomId, person.Id);
+                _roomAlert = $"Kunde inte lägga till dig i rum #{RoomId:0000}. Okänt fel...";
+                _hideRoomAlert = false;
+                return;
             }
         }
 

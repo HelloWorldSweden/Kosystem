@@ -12,7 +12,7 @@ else
 {
     foreach (var person in People.OrderBy(o => o.EnqueuedAt).ThenBy(o => o.Name))
     {
-        <PersonComponent @key="person.Id" Person="person"/>
+        <PersonComponent @key="person.Id" Person="person" IsCurrentPerson="person.Id == CurrentPerson?.Id"/>
     }
 }
 else
@@ -26,4 +26,7 @@ else
 
     [Parameter]
     public IReadOnlyCollection<PersonModel>? People { get; set; }
+
+    [Parameter]
+    public PersonModel? CurrentPerson { get; set; }
 }
