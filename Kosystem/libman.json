@@ -4,7 +4,7 @@
   "libraries": [
     {
       "provider": "unpkg",
-      "library": "papercss@1.6.1",
+      "library": "papercss@1.8.1",
       "destination": "wwwroot/lib/papercss/",
       "files": [
         "dist/paper.css",
