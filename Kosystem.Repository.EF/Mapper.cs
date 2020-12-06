@@ -9,6 +9,7 @@ namespace Kosystem.Repository.EF
             return new PersonModel(person.Id, person.Name)
             {
                 RoomId = person.Room?.DisplayId,
+                EnqueuedAt = person.EnqueuedAt,
             };
         }
 

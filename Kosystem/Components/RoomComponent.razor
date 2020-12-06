@@ -11,7 +11,7 @@ else
     {
         <div class="form-group">
             <label for="paperSwitch1" class="paper-switch-tile">
-                <input id="paperSwitch1" name="paperSwitch1" type="checkbox" />
+                <input id="paperSwitch1" name="paperSwitch1" type="checkbox" value="@_enqueued" @onchange="OnEnqueuedClicked" />
                 <div class="paper-switch-tile-card border">
                     <div class="paper-switch-tile-card-front border background-success">Börja köa</div>
                     <div class="paper-switch-tile-card-back border background-danger">Sluta köa</div>
@@ -35,7 +35,7 @@ else
 
 @if (People?.Count > 0)
 {
-    foreach (var person in People.OrderBy(o => o.EnqueuedAt).ThenBy(o => o.Name))
+    foreach (var person in People.OrderByDescending(o => o.IsEnqueued).ThenBy(o => o.EnqueuedAt).ThenBy(o => o.Name))
     {
         <PersonComponent @key="person.Id" Person="person" IsCurrentPerson="person.Id == CurrentPerson?.Id"/>
     }
@@ -54,4 +54,29 @@ else
 
     [Parameter]
     public PersonModel? CurrentPerson { get; set; }
+
+    [Parameter]
+    public EventCallback OnEnqueue { get;  set; }
+
+    [Parameter]
+    public EventCallback OnDequeue { get;  set; }
+
+    private bool _enqueued = false;
+
+    protected override void OnParametersSet()
+    {
+        _enqueued = CurrentPerson?.IsEnqueued == true;
+    }
+
+    private Task OnEnqueuedClicked(ChangeEventArgs args)
+    {
+        if (args.Value is true)
+        {
+            return OnEnqueue.InvokeAsync();
+        }
+        else
+        {
+            return OnDequeue.InvokeAsync();
+        }
+    }
 }

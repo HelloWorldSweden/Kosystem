@@ -1,9 +1,13 @@
 
 <p>
-    @Person?.Name, @Person?.EnqueuedAt
+    @Person?.Name
     @if (IsCurrentPerson)
     {
         <span>(hey that's you!)</span>
+    }
+    @if (Person?.EnqueuedAt is DateTime enqueuedAt)
+    {
+        <span>(Enqueued at @enqueuedAt.ToString("g"))</span>
     }
 </p>
 

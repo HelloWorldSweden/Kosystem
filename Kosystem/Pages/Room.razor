@@ -1,4 +1,5 @@
 @page "/{RoomId:int}"
+@inject IPersonRepository PersonRepository
 @inject IRoomRepository RoomRepository
 @inject IPersonSession PersonSession
 
@@ -11,14 +12,17 @@
     </div>
 }
 
-<Kosystem.Components.RoomComponent Room="_room" People="_people" CurrentPerson="_currentPerson" />
+<Kosystem.Components.RoomComponent Room="_room" People="_people.Values" CurrentPerson="_currentPerson"
+    OnEnqueue="OnEnqueue"
+    OnDequeue="OnDequeue"
+/>
 
 @code {
     [Parameter]
     public int RoomId { get; set; }
 
     private RoomModel? _room;
-    private IReadOnlyCollection<PersonModel>? _people;
+    private Dictionary<long, PersonModel> _people = new Dictionary<long, PersonModel>();
     private PersonModel? _currentPerson;
 
     private string? _roomAlert;
@@ -48,7 +52,63 @@
 
         if (_room is not null)
         {
-            _people = RoomRepository.FindPeopleInRoom(RoomId);
+            _people = RoomRepository.FindPeopleInRoom(RoomId)
+                .ToDictionary(o => o.Id, o => o);
+        }
+    }
+
+    void RefreshCurrentPerson()
+    {
+        if (PersonSession.TryGetCurrentPerson(out _currentPerson)) {
+            _people[_currentPerson.Id] = _currentPerson;
+        }
+    }
+
+    void OnEnqueue()
+    {
+        if (_currentPerson is not null)
+        {
+            switch (PersonRepository.EnqueuePerson(_currentPerson.Id))
+            {
+                case AddResult.OK:
+                    break;
+
+                case AddResult.AlreadyAdded:
+                    _roomAlert = "Du stod redan i kö.";
+                    _hideRoomAlert = false;
+                    break;
+
+                case AddResult.UnableToAdd:
+                    _roomAlert = "Kunde inte ställa dig i kö. Okänt fel...";
+                    _hideRoomAlert = false;
+                    break;
+            }
+
+            RefreshCurrentPerson();
+        }
+    }
+
+    void OnDequeue()
+    {
+        if (_currentPerson is not null)
+        {
+            switch (PersonRepository.DequeuePerson(_currentPerson.Id))
+            {
+                case RemoveResult.OK:
+                    break;
+
+                case RemoveResult.AlreadyRemoved:
+                    _roomAlert = "Du stod redan inte i kö.";
+                    _hideRoomAlert = false;
+                    break;
+
+                case RemoveResult.UnableToRemove:
+                    _roomAlert = "Kunde inte ta bort dig ur kö. Okänt fel...";
+                    _hideRoomAlert = false;
+                    break;
+            }
+
+            RefreshCurrentPerson();
         }
     }
 }
