@@ -6,7 +6,7 @@
 else
 {
     <div class="row">
-        <div class="col sm-8 md-10 padding-top-none padding-bottom-none">
+        <div class="col sm-9 md-10 padding-top-none padding-bottom-none">
             <h1 class="margin-bottom-none">@RoomIdParser.Format(Room.Id) @Room.Name</h1>
             @if (CurrentPerson is not null)
             {
@@ -21,7 +21,7 @@ else
         </div>
         @if (CurrentPerson is not null)
         {
-            <div class="col sm-2 md-2 align-bottom margin-none padding-bottom-none">
+            <div class="col sm-3 md-2 align-bottom margin-none padding-bottom-none">
                 <div class="form-group">
                     <label for="paperSwitch1" class="paper-switch-tile" style="transform: unset; margin-bottom: 0">
                         <input id="paperSwitch1" name="paperSwitch1" type="checkbox" value="@_enqueued" @onchange="OnEnqueuedClicked" />
