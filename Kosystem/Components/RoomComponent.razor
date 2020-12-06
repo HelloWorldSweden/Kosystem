@@ -98,12 +98,12 @@ else
         {
             var grouped = People.GroupBy(o => o.IsEnqueued);
 
-            _peopleInQueue = (grouped.FirstOrDefault(o => o.Key) as IEnumerable<PersonModel> ?? _peopleInQueue)
+            _peopleInQueue = (grouped.FirstOrDefault(o => o.Key) as IEnumerable<PersonModel> ?? Array.Empty<PersonModel>())
                 .OrderBy(o => o.EnqueuedAt)
                 .ThenBy(o => o.Id)
                 .ToArray();
 
-            _peopleNotInQueue = (grouped.FirstOrDefault(o => !o.Key) as IEnumerable<PersonModel> ?? _peopleNotInQueue)
+            _peopleNotInQueue = (grouped.FirstOrDefault(o => !o.Key) as IEnumerable<PersonModel> ?? Array.Empty<PersonModel>())
                 .OrderBy(o => o.Name)
                 .ThenBy(o => o.Id)
                 .ToArray();
