@@ -44,7 +44,7 @@
 
             if (result is not AddResult.OK and not AddResult.AlreadyAdded)
             {
-                _roomAlert = $"Kunde inte lägga till dig i rum #{RoomId:0000}. Okänt fel...";
+                _roomAlert = $"Kunde inte lägga till dig i rum {RoomIdParser.Format(RoomId)}. Okänt fel...";
                 _hideRoomAlert = false;
                 return;
             }
@@ -57,58 +57,50 @@
         }
     }
 
-    void RefreshCurrentPerson()
+    private void RefreshCurrentPerson()
     {
         if (PersonSession.TryGetCurrentPerson(out _currentPerson)) {
             _people[_currentPerson.Id] = _currentPerson;
         }
     }
 
-    void OnEnqueue()
+    private void OnEnqueue()
     {
-        if (_currentPerson is not null)
-        {
-            switch (PersonRepository.EnqueuePerson(_currentPerson.Id))
-            {
-                case AddResult.OK:
-                    break;
-
-                case AddResult.AlreadyAdded:
-                    _roomAlert = "Du stod redan i kö.";
-                    _hideRoomAlert = false;
-                    break;
-
-                case AddResult.UnableToAdd:
-                    _roomAlert = "Kunde inte ställa dig i kö. Okänt fel...";
-                    _hideRoomAlert = false;
-                    break;
-            }
-
-            RefreshCurrentPerson();
-        }
+        (_hideRoomAlert, _roomAlert) = TryEnqueue();
+        RefreshCurrentPerson();
     }
 
-    void OnDequeue()
+    private void OnDequeue()
     {
-        if (_currentPerson is not null)
+        (_hideRoomAlert, _roomAlert) = TryDequeue();
+        RefreshCurrentPerson();
+    }
+
+    private (bool, string?) TryEnqueue() {
+        if (_currentPerson is null)
         {
-            switch (PersonRepository.DequeuePerson(_currentPerson.Id))
-            {
-                case RemoveResult.OK:
-                    break;
-
-                case RemoveResult.AlreadyRemoved:
-                    _roomAlert = "Du stod redan inte i kö.";
-                    _hideRoomAlert = false;
-                    break;
-
-                case RemoveResult.UnableToRemove:
-                    _roomAlert = "Kunde inte ta bort dig ur kö. Okänt fel...";
-                    _hideRoomAlert = false;
-                    break;
-            }
-
-            RefreshCurrentPerson();
+            return (false, "Du måste ange ett namn innan du kan köa.");
         }
+
+        return PersonRepository.EnqueuePerson(_currentPerson.Id) switch
+        {
+            AddResult.AlreadyAdded => (false, "Du stod redan i kö."),
+            AddResult.OK => (true, null),
+            _ => (false, "Kunde inte ställa dig i kö. Okänt fel..."),
+        };
+    }
+
+    private (bool, string?) TryDequeue() {
+        if (_currentPerson is null)
+        {
+            return (false, "Du måste ange ett namn innan du kan köa.");
+        }
+
+        return PersonRepository.DequeuePerson(_currentPerson.Id) switch
+        {
+            RemoveResult.AlreadyRemoved => (false, "Du stod redan inte i kö."),
+            RemoveResult.OK => (true, null),
+            _ => (false, "Kunde inte ta bort dig ur kö. Okänt fel..."),
+        };
     }
 }
