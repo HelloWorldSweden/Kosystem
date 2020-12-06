@@ -32,5 +32,20 @@ namespace Kosystem.Utility
 
             return int.TryParse(idGroup.Value, out var id) && roomId == id;
         }
+
+        public static string FormatForUrl(int roomId)
+        {
+            return roomId.ToString("0000");
+        }
+
+        public static string Format(int roomId)
+        {
+            return $"#{roomId:0000}";
+        }
+
+        public static string Format(int? roomId)
+        {
+            return roomId.HasValue ? $"#{roomId:0000}" : string.Empty;
+        }
     }
 }

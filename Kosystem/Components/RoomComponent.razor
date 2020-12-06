@@ -5,17 +5,32 @@
 }
 else
 {
-    <h1>#@Room.Id.ToString("0000") @Room.Name</h1>
+    <h1>@RoomIdParser.Format(Room.Id) @Room.Name</h1>
 
-    <div class="form-group">
-        <label for="paperSwitch1" class="paper-switch-tile">
-            <input id="paperSwitch1" name="paperSwitch1" type="checkbox" />
-            <div class="paper-switch-tile-card border">
-                <div class="paper-switch-tile-card-front border background-success">Börja köa</div>
-                <div class="paper-switch-tile-card-back border background-danger">Sluta köa</div>
-            </div>
-        </label>
-    </div>
+    @if (CurrentPerson is not null)
+    {
+        <div class="form-group">
+            <label for="paperSwitch1" class="paper-switch-tile">
+                <input id="paperSwitch1" name="paperSwitch1" type="checkbox" />
+                <div class="paper-switch-tile-card border">
+                    <div class="paper-switch-tile-card-front border background-success">Börja köa</div>
+                    <div class="paper-switch-tile-card-back border background-danger">Sluta köa</div>
+                </div>
+            </label>
+        </div>
+    }
+    else
+    {
+        <div class="form-group">
+            <label class="paper-switch-tile">
+                <div class="paper-switch-tile-card border">
+                    <div class="border background-warning">
+                        <a href="/?room=@RoomIdParser.FormatForUrl(Room.Id)">Skapa namn först</a>
+                    </div>
+                </div>
+            </label>
+        </div>
+    }
 }
 
 @if (People?.Count > 0)
