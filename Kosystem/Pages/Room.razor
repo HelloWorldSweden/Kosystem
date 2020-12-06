@@ -1,19 +1,144 @@
 @page "/{RoomId:int}"
+@implements IDisposable
+@inject IPersonRepository PersonRepository
 @inject IRoomRepository RoomRepository
+@inject IPersonSession PersonSession
+@inject IKosystemEvents KosystemEvents
 
-@if (_room is not null)
+@if (_roomAlert is not null)
 {
-    <Kosystem.Components.RoomComponent Room="_room"/>
+    <input class="alert-state" id="unknown-room-alert" type="checkbox" @bind="_hideRoomAlert" />
+    <div class="alert alert-danger dismissible">
+        <span>@_roomAlert</span>
+        <label class="btn-close" for="unknown-room-alert">X</label>
+    </div>
 }
+
+<Kosystem.Components.RoomComponent Room="_room" People="_people.Values" CurrentPerson="_currentPerson"
+    OnEnqueue="OnEnqueueClick"
+    OnDequeue="OnDequeueClick"
+/>
 
 @code {
     [Parameter]
     public int RoomId { get; set; }
 
     private RoomModel? _room;
+    private Dictionary<long, PersonModel> _people = new Dictionary<long, PersonModel>();
+    private PersonModel? _currentPerson;
+
+    private string? _roomAlert;
+    private bool _hideRoomAlert;
 
     protected override void OnParametersSet()
     {
         _room = RoomRepository.FindRoom(RoomId);
+
+        if (_room is null) {
+            return;
+        }
+
+        RefreshPeople();
+
+        if (_currentPerson is not null && _currentPerson.RoomId != RoomId)
+        {
+            var result = RoomRepository.AddPersonToRoom(RoomId, _currentPerson.Id);
+
+            if (result is not AddResult.OK and not AddResult.AlreadyAdded)
+            {
+                _roomAlert = $"Kunde inte lägga till dig i rum {RoomIdParser.Format(RoomId)}. Okänt fel...";
+                _hideRoomAlert = false;
+                return;
+            }
+        }
+    }
+
+    private void RefreshPeople()
+    {
+        if (_room is not null)
+        {
+            _people = RoomRepository.FindPeopleInRoom(RoomId)
+                .ToDictionary(o => o.Id, o => o);
+        }
+
+        RefreshCurrentPerson();
+    }
+
+    private void RefreshCurrentPerson()
+    {
+        if (PersonSession.TryGetCurrentPerson(out _currentPerson)) {
+            _people[_currentPerson.Id] = _currentPerson;
+        }
+    }
+
+
+    protected override void OnInitialized()
+    {
+        KosystemEvents.Enqueued += OnEnqueueEvent;
+        KosystemEvents.Dequeued += OnEnqueueEvent;
+    }
+
+    private void OnEnqueueEvent(object? sender, EnqueingEventArgs args)
+    {
+        if (args.Room.Id != _room?.Id
+        || args.Person == _currentPerson)
+        {
+            return;
+        }
+
+        RefreshPeople();
+        InvokeAsync(StateHasChanged);
+    }
+
+
+    private void OnEnqueueClick()
+    {
+        UpdateQueuingWithEvent(TryEnqueue, KosystemEvents.OnEnqueued);
+    }
+
+    private void OnDequeueClick()
+    {
+        UpdateQueuingWithEvent(TryDequeue, KosystemEvents.OnDequeued);
+    }
+
+    private void UpdateQueuingWithEvent(
+        Func<PersonModel, (bool ok, string? err)> update,
+        Action<object, PersonModel, RoomModel> sendEvent)
+    {
+        if (_currentPerson is null || _room is null)
+        {
+            return;
+        }
+
+        var (ok, err) = update(_currentPerson);
+        if (ok)
+        {
+            sendEvent(this, _currentPerson, _room);
+        }
+
+        (_hideRoomAlert, _roomAlert) = (ok, err);
+        RefreshCurrentPerson();
+    }
+
+    private (bool ok, string? err) TryEnqueue(PersonModel person)
+        => PersonRepository.EnqueuePerson(person.Id) switch
+        {
+            AddResult.AlreadyAdded => (false, "Du stod redan i kö."),
+            AddResult.OK => (true, null),
+            _ => (false, "Kunde inte ställa dig i kö. Okänt fel..."),
+        };
+
+    private (bool ok, string? err) TryDequeue(PersonModel person)
+        => PersonRepository.DequeuePerson(person.Id) switch
+        {
+            RemoveResult.AlreadyRemoved => (false, "Du stod redan inte i kö."),
+            RemoveResult.OK => (true, null),
+            _ => (false, "Kunde inte ta bort dig ur kö. Okänt fel..."),
+        };
+
+    public void Dispose()
+    {
+        KosystemEvents.Enqueued -= OnEnqueueEvent;
+        KosystemEvents.Dequeued -= OnEnqueueEvent;
     }
 }

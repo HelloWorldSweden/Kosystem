@@ -1,5 +1,3 @@
-@inject IRoomRepository RoomRepository
-
 @if (Room is null)
 {
     <h1>#N/A Rummet finns inte</h1>
@@ -7,15 +5,64 @@
 }
 else
 {
-    <h1>#@Room.Id.ToString("0000") @Room.Name</h1>
+    <div class="row">
+        <div class="col sm-10 padding-top-none padding-bottom-none">
+            <h1 class="margin-bottom-none">@RoomIdParser.Format(Room.Id) @Room.Name</h1>
+            @if (CurrentPerson is not null)
+            {
+                <h3 class="text-muted margin-none ellipsis">Ditt namn: @CurrentPerson.Name</h3>
+            }
+            else
+            {
+                <h3 class="text-muted margin-none">
+                    Du saknar namn. <a href="/?room=@RoomIdParser.FormatForUrl(Room.Id)">Ange namn först</a>
+                </h3>
+            }
+        </div>
+        @if (CurrentPerson is not null)
+        {
+            <div class="col sm-2 align-bottom margin-none padding-bottom-none">
+                <div class="form-group">
+                    <label for="paperSwitch1" class="paper-switch-tile" style="transform: unset; margin-bottom: 0">
+                        <input id="paperSwitch1" name="paperSwitch1" type="checkbox" checked="@_enqueued" @onchange="OnEnqueuedClicked" />
+                        <div class="paper-switch-tile-card border">
+                            <div class="paper-switch-tile-card-front border background-success">Börja köa</div>
+                            <div class="paper-switch-tile-card-back border background-danger">Sluta köa</div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+        }
+    </div>
 }
 
 @if (People?.Count > 0)
 {
-    foreach (var person in People.OrderBy(o => o.EnqueuedAt).ThenBy(o => o.Name))
-    {
-        <PersonComponent @key="person.Name" Person="person"/>
-    }
+    <table style="table-layout: fixed">
+        <thead>
+            <tr>
+                <th style="width: 40px">#</th>
+                <th>Namn</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var (person, index) in _peopleInQueue.Select((p, i) => (p, i)))
+            {
+                <tr>
+                    <td>@(index + 1)</td>
+                    <td class="ellipsis">@person.Name</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h3 class="text-muted">Personer som inte står i kö (@_peopleNotInQueue.Count st):</h3>
+    <div class="row child-borders">
+        @foreach (var (person, index) in _peopleNotInQueue.Select((p, i) => (p, i)))
+        {
+           <div class="align-middle border col margin-small sm-2 ellipsis">@person.Name</div> 
+        }
+    </div>
 }
 else
 {
@@ -26,12 +73,52 @@ else
     [Parameter]
     public RoomModel? Room { get; set; }
 
+    [Parameter]
     public IReadOnlyCollection<PersonModel>? People { get; set; }
 
-    protected override void OnInitialized()
+    [Parameter]
+    public PersonModel? CurrentPerson { get; set; }
+
+    [Parameter]
+    public EventCallback OnEnqueue { get;  set; }
+
+    [Parameter]
+    public EventCallback OnDequeue { get;  set; }
+
+    private bool _enqueued = false;
+
+    private IReadOnlyCollection<PersonModel> _peopleInQueue = Array.Empty<PersonModel>();
+    private IReadOnlyCollection<PersonModel> _peopleNotInQueue = Array.Empty<PersonModel>();
+
+    protected override void OnParametersSet()
     {
-        if (Room is not null){
-            RoomRepository.FindPeopleInRoom(Room.Id);
+        _enqueued = CurrentPerson?.IsEnqueued == true;
+
+        if (People is not null)
+        {
+            var grouped = People.GroupBy(o => o.IsEnqueued);
+
+            _peopleInQueue = (grouped.FirstOrDefault(o => o.Key) as IEnumerable<PersonModel> ?? Array.Empty<PersonModel>())
+                .OrderBy(o => o.EnqueuedAt)
+                .ThenBy(o => o.Id)
+                .ToArray();
+
+            _peopleNotInQueue = (grouped.FirstOrDefault(o => !o.Key) as IEnumerable<PersonModel> ?? Array.Empty<PersonModel>())
+                .OrderBy(o => o.Name)
+                .ThenBy(o => o.Id)
+                .ToArray();
+        }
+    }
+
+    private Task OnEnqueuedClicked(ChangeEventArgs args)
+    {
+        if (args.Value is true)
+        {
+            return OnEnqueue.InvokeAsync();
+        }
+        else
+        {
+            return OnDequeue.InvokeAsync();
         }
     }
 }

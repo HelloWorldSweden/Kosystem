@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Kosystem.Events\Kosystem.Events.csproj" />
     <ProjectReference Include="..\Kosystem.Repository.EF\Kosystem.Repository.EF.csproj" />
     <ProjectReference Include="..\Kosystem.Repository\Kosystem.Repository.csproj" />
     <ProjectReference Include="..\Kosystem.Shared\Kosystem.Shared.csproj" />

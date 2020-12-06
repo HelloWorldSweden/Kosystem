@@ -2,6 +2,7 @@
 @inject NavigationManager NavigationManager
 @inject IPersonSession PersonSession
 @inject IRoomRepository RoomRepository
+@inject NavigationManager navManager
 
 <h1>Börja köa efter hjälp</h1>
 
@@ -64,8 +65,25 @@
             model.Name = currentPerson.Name;
             if (currentPerson.IsInRoom)
             {
-                model.RoomId = $"#{currentPerson.RoomId:0000}";
+                model.RoomId = RoomIdParser.Format(currentPerson.RoomId);
                 previousRoomId = currentPerson.RoomId;
+            }
+        }
+
+        if (string.IsNullOrEmpty(model.RoomId))
+        {
+            var uri = navManager.ToAbsoluteUri(navManager.Uri);
+            if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("room", out var roomParams)
+                && roomParams.LastOrDefault() is string roomParam)
+            {
+                if (RoomIdParser.TryParse(roomParam, out var roomId))
+                {
+                    model.RoomId = RoomIdParser.Format(roomId);
+                }
+                else
+                {
+                    model.RoomId = roomParam;
+                }
             }
         }
     }
@@ -88,22 +106,13 @@
         if (room is null)
         {
             roomAlert = previousRoomId == roomId
-                ? $"Rum #{roomId:0000} finns inte längre."
-                : $"Rum #{roomId:0000} finns inte.";
+                ? $"Rum {RoomIdParser.Format(roomId)} finns inte längre."
+                : $"Rum {RoomIdParser.Format(roomId)} finns inte.";
             hideRoomAlert = false;
             return;
         }
 
-        var person = PersonSession.SetCurrentPerson(model.Name);
-        var result = RoomRepository.AddPersonToRoom(room.Id, person.Id);
-
-        if (result is not AddResult.OK and not AddResult.AlreadyAdded)
-        {
-            roomAlert = $"Kunde inte lägga till dig i rum #{roomId:0000}. Okänt fel...";
-            hideRoomAlert = false;
-            return;
-        }
-
-        NavigationManager.NavigateTo($"/{roomId:0000}");
+        PersonSession.SetCurrentPerson(model.Name);
+        NavigationManager.NavigateTo($"/{RoomIdParser.FormatForUrl(roomId)}");
     }
 }

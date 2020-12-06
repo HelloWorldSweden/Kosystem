@@ -1,7 +1,20 @@
-﻿
-@Person?.Name, @Person?.EnqueuedAt
+
+<p>
+    @Person?.Name
+    @if (IsCurrentPerson)
+    {
+        <span>(hey that's you!)</span>
+    }
+    @if (Person?.EnqueuedAt is DateTime enqueuedAt)
+    {
+        <span>(Enqueued at @enqueuedAt.ToString("g"))</span>
+    }
+</p>
 
 @code {
     [Parameter]
     public PersonModel? Person { get; set; }
+
+    [Parameter]
+    public bool IsCurrentPerson { get; set; }
 }
