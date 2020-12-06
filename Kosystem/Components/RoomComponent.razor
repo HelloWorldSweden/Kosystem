@@ -6,11 +6,11 @@
 else
 {
     <div class="row">
-        <div class="col sm-9 md-10 padding-top-none padding-bottom-none">
+        <div class="col sm-10 padding-top-none padding-bottom-none">
             <h1 class="margin-bottom-none">@RoomIdParser.Format(Room.Id) @Room.Name</h1>
             @if (CurrentPerson is not null)
             {
-                <h3 class="text-muted margin-none">Ditt namn: @CurrentPerson.Name</h3>
+                <h3 class="text-muted margin-none ellipsis">Ditt namn: @CurrentPerson.Name</h3>
             }
             else
             {
@@ -21,7 +21,7 @@ else
         </div>
         @if (CurrentPerson is not null)
         {
-            <div class="col sm-3 md-2 align-bottom margin-none padding-bottom-none">
+            <div class="col sm-2 align-bottom margin-none padding-bottom-none">
                 <div class="form-group">
                     <label for="paperSwitch1" class="paper-switch-tile" style="transform: unset; margin-bottom: 0">
                         <input id="paperSwitch1" name="paperSwitch1" type="checkbox" checked="@_enqueued" @onchange="OnEnqueuedClicked" />
@@ -38,10 +38,31 @@ else
 
 @if (People?.Count > 0)
 {
-    foreach (var person in People.OrderByDescending(o => o.IsEnqueued).ThenBy(o => o.EnqueuedAt).ThenBy(o => o.Name))
-    {
-        <PersonComponent @key="person.Id" Person="person" IsCurrentPerson="person.Id == CurrentPerson?.Id"/>
-    }
+    <table style="table-layout: fixed">
+        <thead>
+            <tr>
+                <th style="width: 40px">#</th>
+                <th>Namn</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var (person, index) in _peopleInQueue.Select((p, i) => (p, i)))
+            {
+                <tr>
+                    <td>@(index + 1)</td>
+                    <td class="ellipsis">@person.Name</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h3 class="text-muted">Personer som inte står i kö (@_peopleNotInQueue.Count st):</h3>
+    <div class="row child-borders">
+        @foreach (var (person, index) in _peopleNotInQueue.Select((p, i) => (p, i)))
+        {
+           <div class="align-middle border col margin-small sm-2 ellipsis">@person.Name</div> 
+        }
+    </div>
 }
 else
 {
@@ -66,9 +87,27 @@ else
 
     private bool _enqueued = false;
 
+    private IReadOnlyCollection<PersonModel> _peopleInQueue = Array.Empty<PersonModel>();
+    private IReadOnlyCollection<PersonModel> _peopleNotInQueue = Array.Empty<PersonModel>();
+
     protected override void OnParametersSet()
     {
         _enqueued = CurrentPerson?.IsEnqueued == true;
+
+        if (People is not null)
+        {
+            var grouped = People.GroupBy(o => o.IsEnqueued);
+
+            _peopleInQueue = (grouped.FirstOrDefault(o => o.Key) as IEnumerable<PersonModel> ?? _peopleInQueue)
+                .OrderBy(o => o.EnqueuedAt)
+                .ThenBy(o => o.Id)
+                .ToArray();
+
+            _peopleNotInQueue = (grouped.FirstOrDefault(o => !o.Key) as IEnumerable<PersonModel> ?? _peopleNotInQueue)
+                .OrderBy(o => o.Name)
+                .ThenBy(o => o.Id)
+                .ToArray();
+        }
     }
 
     private Task OnEnqueuedClicked(ChangeEventArgs args)
