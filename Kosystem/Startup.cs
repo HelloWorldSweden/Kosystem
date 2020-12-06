@@ -1,4 +1,5 @@
 using Kosystem.Configuration;
+using Kosystem.Events;
 using Kosystem.Repository.EF;
 using Kosystem.Services;
 using Microsoft.AspNetCore.Builder;
@@ -27,6 +28,7 @@ namespace Kosystem
             services.AddRazorPages();
             services.AddServerSideBlazor();
 
+            services.AddSingleton<IKosystemEvents, KosystemEvents>();
             services.AddScoped<AuthenticationStateProvider, MyAuthenticationStateProvider>();
             services.AddScoped(sp => {
                 var provider = (IAuthSetter)sp.GetRequiredService<AuthenticationStateProvider>();
