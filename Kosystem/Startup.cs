@@ -47,11 +47,7 @@ namespace Kosystem
                 {
                     sqliteOpt.MigrationsAssembly(nameof(Kosystem));
                 });
-            })
-                .AddPersonRepositoryMiddleware((p, repo)
-                    => new EventAwarePersonRepository(repo, p.GetRequiredService<IKosystemEvents>()))
-                .AddRoomRepositoryMiddleware((p, repo)
-                    => new EventAwareRoomRepository(repo, p.GetRequiredService<IKosystemEvents>()));
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
