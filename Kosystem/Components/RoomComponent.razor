@@ -48,9 +48,19 @@ else
         <tbody>
             @foreach (var (person, index) in _peopleInQueue.Select((p, i) => (p, i)))
             {
-                <tr>
+                <tr @key="@("enqueued-" + person.Id)">
                     <td>@(index + 1)</td>
-                    <td class="ellipsis">@person.Name</td>
+                    <td class="row flex-nowrap">
+                        <div class="ellipsis">
+                            @person.Name
+                        </div>
+                        @if (person.Id == CurrentPerson?.Id)
+                        {
+                            <div class="italic text-secondary padding-left flex-noshrink">
+                                (Här är du!)
+                            </div>
+                        }
+                    </td>
                 </tr>
             }
         </tbody>
@@ -60,7 +70,13 @@ else
     <div class="row child-borders">
         @foreach (var (person, index) in _peopleNotInQueue.Select((p, i) => (p, i)))
         {
-           <div class="align-middle border col margin-small sm-2 ellipsis">@person.Name</div> 
+           <div @key="@("dequeued-" + person.Id)" class="align-middle border col margin-small sm-2 ellipsis">
+               @person.Name
+               @if (person.Id == CurrentPerson?.Id)
+               {
+                    <div class="italic text-secondary">(Här är du!)</div>
+               }
+           </div>
         }
     </div>
 }
