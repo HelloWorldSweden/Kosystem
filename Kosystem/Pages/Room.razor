@@ -77,6 +77,8 @@
     {
         KosystemEvents.Enqueued += OnEnqueueEvent;
         KosystemEvents.Dequeued += OnEnqueueEvent;
+        KosystemEvents.JoinedRoom += OnRoomAttendanceEvent;
+        KosystemEvents.LeftRoom += OnRoomAttendanceEvent;
     }
 
     private void OnEnqueueEvent(object? sender, EnqueingEventArgs args)
@@ -91,6 +93,16 @@
         InvokeAsync(StateHasChanged);
     }
 
+    private void OnRoomAttendanceEvent(object? sender, RoomAttendanceEventArgs args)
+    {
+        if (args.Room.Id != _room?.Id)
+        {
+            return;
+        }
+
+        RefreshPeople();
+        InvokeAsync(StateHasChanged);
+    }
 
     private void OnEnqueueClick()
     {
@@ -134,5 +146,7 @@
     {
         KosystemEvents.Enqueued -= OnEnqueueEvent;
         KosystemEvents.Dequeued -= OnEnqueueEvent;
+        KosystemEvents.JoinedRoom -= OnRoomAttendanceEvent;
+        KosystemEvents.LeftRoom -= OnRoomAttendanceEvent;
     }
 }
