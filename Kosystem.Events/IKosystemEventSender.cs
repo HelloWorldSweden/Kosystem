@@ -1,14 +1,12 @@
-using System;
 using Kosystem.Shared;
 
 namespace Kosystem.Events
 {
-    public interface IKosystemEvents
+    public interface IKosystemEventSender
     {
-        event EventHandler<EnqueingEventArgs>? Enqueued;
-        event EventHandler<EnqueingEventArgs>? Dequeued;
-
         void OnDequeued(object sender, PersonModel person, RoomModel room);
         void OnEnqueued(object sender, PersonModel person, RoomModel room);
+        void OnJoinedRoom(object sender, PersonModel person, RoomModel room);
+        void OnLeftRoom(object sender, PersonModel person, RoomModel room);
     }
 }
