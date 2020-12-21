@@ -2,44 +2,22 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace Kosystem.Repository.EF
 {
     public static class RepositoryExtensions
     {
-        private class KosystemEfRepositoryConfiguration : KosystemRepositoryConfiguration
-        {
-            protected override IPersonRepository CreateInitialPersonRepository(IServiceProvider provider)
-            {
-                var dbContextFactory = provider.GetRequiredService<IDbContextFactory<KosystemDbContext>>();
-                var logger = provider.GetRequiredService<ILogger<EfPersonRepository>>();
-                return new EfPersonRepository(dbContextFactory, logger);
-            }
-
-            protected override IRoomRepository CreateInitialRoomRepository(IServiceProvider provider)
-            {
-                var dbContextFactory = provider.GetRequiredService<IDbContextFactory<KosystemDbContext>>();
-                var logger = provider.GetRequiredService<ILogger<EfRoomRepository>>();
-                return new EfRoomRepository(dbContextFactory, logger);
-            }
-        }
-
-        public static KosystemRepositoryConfiguration AddKosystemEfRepository(
+        public static IServiceCollection AddKosystemEfRepository(
             this IServiceCollection services,
             Action<IServiceProvider, DbContextOptionsBuilder> optionsAction)
         {
-            var conf = new KosystemEfRepositoryConfiguration();
-
-            services
+            return services
                 .AddDbContextFactory<KosystemDbContext>(optionsAction)
-                .AddSingleton(conf.CreatePersonFactory)
-                .AddSingleton(conf.CreateRoomFactory);
-
-            return conf;
+                .AddSingleton<IRoomRepository, EfRoomRepository>()
+                .AddSingleton<IPersonRepository, EfPersonRepository>();
         }
 
-        public static KosystemRepositoryConfiguration AddKosystemEfRepository(
+        public static IServiceCollection AddKosystemEfRepository(
             this IServiceCollection services,
             Action<DbContextOptionsBuilder> optionsAction)
         {
