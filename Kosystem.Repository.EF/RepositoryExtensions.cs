@@ -24,7 +24,7 @@ namespace Kosystem.Repository.EF
             return AddKosystemEfRepository(services, (_, opt) => optionsAction(opt));
         }
 
-        public static IHost ApplyKosystemMigration(this IHost host)
+        public static IHost PrepareKosystemDatabase(this IHost host)
         {
             using var scope = host.Services.CreateScope();
             var services = scope.ServiceProvider;
@@ -33,6 +33,8 @@ namespace Kosystem.Repository.EF
             using var ctx = ctxFactory.CreateDbContext();
 
             ctx.Database.Migrate();
+            ctx.People.RemoveRange(ctx.People);
+            ctx.SaveChanges();
 
             return host;
         }

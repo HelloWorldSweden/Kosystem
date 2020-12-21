@@ -27,7 +27,7 @@ namespace Kosystem
 
         private void Run()
         {
-            _host.ApplyKosystemMigration();
+            _host.PrepareKosystemDatabase();
             _host.Run();
         }
     }
