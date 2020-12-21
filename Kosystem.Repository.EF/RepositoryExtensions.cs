@@ -13,8 +13,8 @@ namespace Kosystem.Repository.EF
         {
             return services
                 .AddDbContextFactory<KosystemDbContext>(optionsAction)
-                .AddSingleton<IPersonRepository, EfPersonRepository>()
-                .AddSingleton<IRoomRepository, EfRoomRepository>();
+                .AddSingleton<IRoomRepository, EfRoomRepository>()
+                .AddSingleton<IPersonRepository, EfPersonRepository>();
         }
 
         public static IServiceCollection AddKosystemEfRepository(

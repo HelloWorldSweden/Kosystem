@@ -28,7 +28,10 @@ namespace Kosystem
             services.AddRazorPages();
             services.AddServerSideBlazor();
 
-            services.AddSingleton<IKosystemEvents, KosystemEvents>();
+            var events = new KosystemEvents();
+            services.AddSingleton<IKosystemEventListener>(events);
+            services.AddSingleton<IKosystemEventSender>(events);
+
             services.AddScoped<AuthenticationStateProvider, MyAuthenticationStateProvider>();
             services.AddScoped(sp => {
                 var provider = (IAuthSetter)sp.GetRequiredService<AuthenticationStateProvider>();
@@ -48,6 +51,8 @@ namespace Kosystem
                     sqliteOpt.MigrationsAssembly(nameof(Kosystem));
                 });
             });
+
+            services.AddSingleton<EventAwareRepositories>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

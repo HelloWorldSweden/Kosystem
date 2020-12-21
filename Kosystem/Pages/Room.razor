@@ -3,7 +3,8 @@
 @inject IPersonRepository PersonRepository
 @inject IRoomRepository RoomRepository
 @inject IPersonSession PersonSession
-@inject IKosystemEvents KosystemEvents
+@inject IKosystemEventListener KosystemEvents
+@inject EventAwareRepositories EventAwareRepos
 
 @if (_roomAlert is not null)
 {
@@ -42,7 +43,7 @@
 
         if (_currentPerson is not null && _currentPerson.RoomId != RoomId)
         {
-            var result = RoomRepository.AddPersonToRoom(RoomId, _currentPerson.Id);
+            var result = EventAwareRepos.AddPersonToRoom(_currentPerson, _room);
 
             if (result is not AddResult.OK and not AddResult.AlreadyAdded)
             {
@@ -76,6 +77,8 @@
     {
         KosystemEvents.Enqueued += OnEnqueueEvent;
         KosystemEvents.Dequeued += OnEnqueueEvent;
+        KosystemEvents.JoinedRoom += OnRoomAttendanceEvent;
+        KosystemEvents.LeftRoom += OnRoomAttendanceEvent;
     }
 
     private void OnEnqueueEvent(object? sender, EnqueingEventArgs args)
@@ -90,46 +93,49 @@
         InvokeAsync(StateHasChanged);
     }
 
+    private void OnRoomAttendanceEvent(object? sender, RoomAttendanceEventArgs args)
+    {
+        if (args.Room.Id != _room?.Id)
+        {
+            return;
+        }
+
+        RefreshPeople();
+        InvokeAsync(StateHasChanged);
+    }
 
     private void OnEnqueueClick()
     {
-        UpdateQueuingWithEvent(TryEnqueue, KosystemEvents.OnEnqueued);
+        UpdateQueuingWithEvent(TryEnqueue);
     }
 
     private void OnDequeueClick()
     {
-        UpdateQueuingWithEvent(TryDequeue, KosystemEvents.OnDequeued);
+        UpdateQueuingWithEvent(TryDequeue);
     }
 
     private void UpdateQueuingWithEvent(
-        Func<PersonModel, (bool ok, string? err)> update,
-        Action<object, PersonModel, RoomModel> sendEvent)
+        Func<PersonModel, RoomModel, (bool ok, string? err)> update)
     {
         if (_currentPerson is null || _room is null)
         {
             return;
         }
 
-        var (ok, err) = update(_currentPerson);
-        if (ok)
-        {
-            sendEvent(this, _currentPerson, _room);
-        }
-
-        (_hideRoomAlert, _roomAlert) = (ok, err);
+        (_hideRoomAlert, _roomAlert) = update(_currentPerson, _room);
         RefreshCurrentPerson();
     }
 
-    private (bool ok, string? err) TryEnqueue(PersonModel person)
-        => PersonRepository.EnqueuePerson(person.Id) switch
+    private (bool ok, string? err) TryEnqueue(PersonModel person, RoomModel room)
+        => EventAwareRepos.EnqueuePerson(person, room) switch
         {
             AddResult.AlreadyAdded => (false, "Du stod redan i kö."),
             AddResult.OK => (true, null),
             _ => (false, "Kunde inte ställa dig i kö. Okänt fel..."),
         };
 
-    private (bool ok, string? err) TryDequeue(PersonModel person)
-        => PersonRepository.DequeuePerson(person.Id) switch
+    private (bool ok, string? err) TryDequeue(PersonModel person, RoomModel room)
+        => EventAwareRepos.DequeuePerson(person, room) switch
         {
             RemoveResult.AlreadyRemoved => (false, "Du stod redan inte i kö."),
             RemoveResult.OK => (true, null),
@@ -140,5 +146,7 @@
     {
         KosystemEvents.Enqueued -= OnEnqueueEvent;
         KosystemEvents.Dequeued -= OnEnqueueEvent;
+        KosystemEvents.JoinedRoom -= OnRoomAttendanceEvent;
+        KosystemEvents.LeftRoom -= OnRoomAttendanceEvent;
     }
 }
