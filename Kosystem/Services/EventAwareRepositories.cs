@@ -39,5 +39,15 @@ namespace Kosystem.Services
             }
             return result;
         }
+
+        public AddResult AddPersonToRoom(PersonModel person, RoomModel room)
+        {
+            var result = _roomRepo.AddPersonToRoom(room.Id, person.Id);
+            if (result == AddResult.OK)
+            {
+                _events.OnJoinedRoom(this, person, room);
+            }
+            return result;
+        }
     }
 }

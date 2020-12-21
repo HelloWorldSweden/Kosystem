@@ -43,7 +43,7 @@
 
         if (_currentPerson is not null && _currentPerson.RoomId != RoomId)
         {
-            var result = RoomRepository.AddPersonToRoom(RoomId, _currentPerson.Id);
+            var result = EventAwareRepos.AddPersonToRoom(_currentPerson, _room);
 
             if (result is not AddResult.OK and not AddResult.AlreadyAdded)
             {
