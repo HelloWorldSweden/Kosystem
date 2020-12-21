@@ -40,4 +40,17 @@ footer {
 .ellipsis {
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.italic {
+    font-style: italic;
+}
+
+.flex-nowrap {
+    flex-wrap: nowrap;
+}
+
+.flex-noshrink {
+    flex-shrink: 0;
 }
