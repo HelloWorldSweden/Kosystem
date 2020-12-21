@@ -8,53 +8,24 @@ namespace Kosystem.Repository.EF
 {
     public static class RepositoryExtensions
     {
-        private class KosystemEfRepositoryConfiguration : IKosystemRepositoryConfiguration
+        private class KosystemEfRepositoryConfiguration : KosystemRepositoryConfiguration
         {
-            private Func<IServiceProvider, IPersonRepository, IPersonRepository>? _personRepoFactory;
-            private Func<IServiceProvider, IRoomRepository, IRoomRepository>? _roomRepoFactory;
-            
-            public IKosystemRepositoryConfiguration AddPersonRepositoryMiddleware(Func<IServiceProvider, IPersonRepository, IPersonRepository> implementationFactory)
-            {
-                _personRepoFactory = implementationFactory;
-                return this;
-            }
-
-            public IKosystemRepositoryConfiguration AddRoomRepositoryMiddleware(Func<IServiceProvider, IRoomRepository, IRoomRepository> implementationFactory)
-            {
-                _roomRepoFactory = implementationFactory;
-                return this;
-            }
-
-            public IPersonRepository CreatePersonFactory(IServiceProvider provider)
+            protected override IPersonRepository CreateInitialPersonRepository(IServiceProvider provider)
             {
                 var dbContextFactory = provider.GetRequiredService<IDbContextFactory<KosystemDbContext>>();
                 var logger = provider.GetRequiredService<ILogger<EfPersonRepository>>();
-                var repo = new EfPersonRepository(dbContextFactory, logger);
-
-                if (_personRepoFactory is not null)
-                {
-                    return _personRepoFactory(provider, repo);
-                }
-
-                return repo;
+                return new EfPersonRepository(dbContextFactory, logger);
             }
 
-            public IRoomRepository CreateRoomFactory(IServiceProvider provider)
+            protected override IRoomRepository CreateInitialRoomRepository(IServiceProvider provider)
             {
                 var dbContextFactory = provider.GetRequiredService<IDbContextFactory<KosystemDbContext>>();
                 var logger = provider.GetRequiredService<ILogger<EfRoomRepository>>();
-                var repo = new EfRoomRepository(dbContextFactory, logger);
-
-                if (_roomRepoFactory is not null)
-                {
-                    return _roomRepoFactory(provider, repo);
-                }
-
-                return repo;
+                return new EfRoomRepository(dbContextFactory, logger);
             }
         }
 
-        public static IKosystemRepositoryConfiguration AddKosystemEfRepository(
+        public static KosystemRepositoryConfiguration AddKosystemEfRepository(
             this IServiceCollection services,
             Action<IServiceProvider, DbContextOptionsBuilder> optionsAction)
         {
@@ -68,7 +39,7 @@ namespace Kosystem.Repository.EF
             return conf;
         }
 
-        public static IKosystemRepositoryConfiguration AddKosystemEfRepository(
+        public static KosystemRepositoryConfiguration AddKosystemEfRepository(
             this IServiceCollection services,
             Action<DbContextOptionsBuilder> optionsAction)
         {
