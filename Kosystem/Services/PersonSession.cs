@@ -7,15 +7,19 @@ namespace Kosystem.Services
 {
     public class PersonSession : IDisposable, IPersonSession
     {
+        private readonly EventAwareRepositories _eventAwareRepos;
         private readonly IPersonRepository _personRepository;
         private bool _disposedValue;
         private long? _registeredPersonId;
 
         public bool IsRegistered => _registeredPersonId.HasValue;
 
-        public PersonSession(IPersonRepository personRepository)
+        public PersonSession(
+            IPersonRepository personRepository,
+            EventAwareRepositories eventAwareRepos)
         {
             _personRepository = personRepository;
+            _eventAwareRepos = eventAwareRepos;
         }
 
         public PersonModel RegisterPerson(string name)
@@ -63,7 +67,11 @@ namespace Kosystem.Services
         {
             if (_registeredPersonId.HasValue)
             {
-                _personRepository.DeletePerson(_registeredPersonId.Value);
+                if (TryGetCurrentPerson(out var person))
+                {
+                    _eventAwareRepos.DeletePerson(person);
+                }
+
                 _registeredPersonId = null;
             }
         }

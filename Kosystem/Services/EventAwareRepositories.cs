@@ -40,6 +40,22 @@ namespace Kosystem.Services
             return result;
         }
 
+        public RemoveResult DeletePerson(PersonModel person)
+        {
+            var room = person.RoomId.HasValue
+                ? _roomRepo.FindRoom(person.RoomId.Value)
+                : null;
+
+            var result = _personRepo.DeletePerson(person.Id);
+
+            if (result == RemoveResult.OK && room is not null)
+            {
+                _events.OnLeftRoom(this, person, room);
+            }
+
+            return result;
+        }
+
         public AddResult AddPersonToRoom(PersonModel person, RoomModel room)
         {
             var result = _roomRepo.AddPersonToRoom(room.Id, person.Id);
