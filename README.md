@@ -24,6 +24,7 @@ especially when their task requires two hands (such as accessing a computer).
   - Create new rooms.
   - Delete existing rooms.
   - Enter a room as a moderator.
+
 - Once logged in and entered a room as a moderator, you may:
   - ~~Kick users~~ *Not yet available.*
   - ~~Rename users~~ *Not yet available.*
