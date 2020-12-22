@@ -79,6 +79,13 @@ With said connection, the server is able to update the clients web pages
 without the need for reloading the page. This allows live updates of the page
 whenever a user joins a room, leaves a room, enqueues, etc.
 
+The state of the application is currently stored via the
+[SQLite Database Provider](https://docs.microsoft.com/en-us/ef/core/providers/sqlite/?tabs=dotnet-core-cli)
+(for [Entity Framework Core](https://docs.microsoft.com/en-us/ef/core/)) on
+disk. This may be replaced with a remote server in the future to allow the
+state (created rooms, enqueued users, etc.) to persist even after updates or
+systematic restarts.
+
 ## Architecture
 
 In the effort to keep the project clean, the following architecture is used:
