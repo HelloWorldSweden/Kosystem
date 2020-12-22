@@ -42,15 +42,23 @@ especially when their task requires two hands (such as accessing a computer).
 ## Running from Visual Studio
 
 1. You need Visual Studio with .NET 5.0 *(or greater)*, i.e.:
+
    - Visual Studio 2019 16.8.0 *(or greater)*
    - Visual Studio 2019 for Mac v8.8 *(or greater)*
+
 2. You need the following workloads: *(via the Visual Studio Installer)*
+
    - ASP.NET and web development
+
 3. In the tab "Induvidual components", ensure you install the following:
+
    - .NET 5.0 Runtime
    - .NET SDK
+
 4. Open the solution file `Kosystem.sln` in Visual Studio
+
 5. Start the project named simply `Kosystem`.
+
    1. Right click the project `Kosystem` in the Solution Explorer
    2. Click "Set as Startup Project"
    3. Run the project. For example by clicking <kbd>F5</kbd>
