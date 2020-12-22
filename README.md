@@ -1,9 +1,9 @@
 # Kösystem / Queuing service
 
-Generic enqueing service for letting users enqueue and have all other users
+Generic enqueuing service for letting users enqueue and have all other users
 see who's first in queue.
 
-![Screenshot](docs/screenshot01.png)
+> ![Screenshot](docs/screenshot01.png)
 
 Useful when holding lectures by allowing participants to enter a "help queue",
 where the leader/teacher can easily see who's next in queue to get help, all
@@ -28,6 +28,16 @@ especially when their task requires two hands (such as accessing a computer).
   - ~~Kick users~~ *Not yet available.*
   - ~~Rename users~~ *Not yet available.*
   - ~~Dequeue users~~ *Not yet available.*
+
+## Screenshots
+
+> ![Creating a room](docs/screenshot02.png)
+
+> ![Inside an empty room, without having a name specified](docs/screenshot03.png)
+
+> ![Entering a room](docs/screenshot04.png)
+
+> ![Being inside a room, dequeued](docs/screenshot05.png)
 
 ## Running from Visual Studio
 
@@ -129,7 +139,6 @@ instead of using the provided concrete types.
 This project may depend on any project, except for frontend projects
 (ex: `Kosystem`) nor any concrete implementations of the repositories
 (ex: `Kosystem.Repository.EF`).
-
 
 ### Kosystem.Repository.EF/Kosystem.Repository.EF.csproj
 
