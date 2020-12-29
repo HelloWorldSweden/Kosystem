@@ -60,5 +60,11 @@
     </footer>
 
     <script src="_framework/blazor.server.js"></script>
+    <environment include="Development">
+        <script type="text/javascript" asp-src-include="~/js/**.js" asp-src-exclude="~/js/**.min.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script type="text/javascript" asp-src-include="~/js/**.min.js"></script>
+    </environment>
 </body>
 </html>

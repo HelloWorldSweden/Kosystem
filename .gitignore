@@ -41,6 +41,7 @@ bld/
 */wwwroot/css/*.min.css
 */wwwroot/js/*.min.js
 */wwwroot/js/*.min.js.map
+*/wwwroot/js/*.min.js.gz
 
 # Visual Studio 2017 auto generated files
 Generated\ Files/

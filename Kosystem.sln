@@ -22,7 +22,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kosystem.Repository", "Kosy
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kosystem.Repository.EF", "Kosystem.Repository.EF\Kosystem.Repository.EF.csproj", "{7348D125-CC0C-4F7D-85E7-830C57659A59}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kosystem.Events", "Kosystem.Events\Kosystem.Events.csproj", "{78C1FED5-FD96-4F15-A38E-E61AD21A28ED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kosystem.Events", "Kosystem.Events\Kosystem.Events.csproj", "{78C1FED5-FD96-4F15-A38E-E61AD21A28ED}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
