@@ -29,7 +29,7 @@ namespace Kosystem
             services.AddLocalization(options => options.ResourcesPath = "Resources");
             services.Configure((System.Action<RequestLocalizationOptions>)(options =>
             {
-                options.DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture("sv");
+                options.DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture("en");
 
                 var cultureInfos = new[] { new CultureInfo("en"), new CultureInfo("sv") };
                 options.SupportedCultures = cultureInfos;
@@ -38,6 +38,7 @@ namespace Kosystem
 
             services.AddRazorPages();
             services.AddServerSideBlazor(options => options.DetailedErrors = true);
+            services.AddControllers();
 
             var events = new KosystemEvents();
             services.AddSingleton<IKosystemEventListener>(events);
@@ -90,6 +91,7 @@ namespace Kosystem
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllers();
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
             });

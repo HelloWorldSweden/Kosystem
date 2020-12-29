@@ -1,0 +1,43 @@
+@using System.Globalization
+@using Microsoft.AspNetCore.Builder
+@using Microsoft.Extensions.Options
+@inject NavigationManager NavigationManager
+@inject IOptions<RequestLocalizationOptions> LocalizationOptions
+@inject IPersonSession PersonSession
+@inject IJSRuntime JS
+
+<select @ref="selectElement" @onchange="OnLanguageSelect">
+    @foreach(var culture in LocalizationOptions.Value.SupportedCultures)
+    {
+        <option @key="culture.LCID" value="@culture.Name" selected="@(CultureInfo.CurrentCulture.LCID == culture.LCID)">@culture.NativeName</option>
+    }
+</select>
+
+@code {
+    private ElementReference selectElement;
+
+    private async Task OnLanguageSelect(ChangeEventArgs e)
+    {
+        var culture = e.Value as string;
+        if (string.IsNullOrWhiteSpace(culture))
+        {
+            return;
+        }
+
+        if (PersonSession.IsRegistered) {
+            if (await JS.InvokeAsync<bool>("confirm", "Switching language will discard your current account. You will lose your name and queue position. Proceed?") is not true)
+            {
+                await JS.InvokeVoidAsync("Kosystem.selectValue", selectElement, CultureInfo.CurrentCulture.Name);
+                return;
+            }
+        }
+
+        var uri = new Uri(NavigationManager.Uri);
+        var pathAndQuery = uri.GetComponents(UriComponents.PathAndQuery, UriFormat.Unescaped);
+
+        var query = $"?culture={Uri.EscapeDataString(culture)}&" +
+            $"redirectUri={Uri.EscapeDataString(pathAndQuery)}";
+
+        NavigationManager.NavigateTo("/Culture/SetCulture" + query, forceLoad: true);
+    }
+}
