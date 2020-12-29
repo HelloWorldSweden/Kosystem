@@ -1,21 +1,24 @@
+@inject IStringLocalizer<RoomComponent> Localizer
+
 @if (Room is null)
 {
-    <h1>#N/A Rummet finns inte</h1>
-    <p>Rummet kanske har blivit borttaget, eller så har du länkats till fel rumsnummber.</p>
+    <h1>@Localizer["Not found, header"]</h1>
+    <p>@Localizer["Not found, description"]</p>
 }
 else
 {
     <div class="row">
         <div class="col sm-10 padding-top-none padding-bottom-none">
-            <h1 class="margin-bottom-none">@RoomIdParser.Format(Room.Id) @Room.Name</h1>
+            <h1 class="margin-bottom-none">@Localizer["Header", RoomIdParser.Format(Room.Id), @Room.Name]</h1>
             @if (CurrentPerson is not null)
             {
-                <h3 class="text-muted margin-none ellipsis">Ditt namn: @CurrentPerson.Name</h3>
+                <h3 class="text-muted margin-none ellipsis">@Localizer["Subtitle, named", CurrentPerson.Name]</h3>
             }
             else
             {
                 <h3 class="text-muted margin-none">
-                    Du saknar namn. <a href="/?room=@RoomIdParser.FormatForUrl(Room.Id)">Ange namn först</a>
+                    @Localizer["Subtitle, unnamed"]
+                    <a href="/?room=@RoomIdParser.FormatForUrl(Room.Id)">@Localizer["Subtitle, set name link"]</a>
                 </h3>
             }
         </div>
@@ -26,8 +29,8 @@ else
                     <label for="paperSwitch1" class="paper-switch-tile" style="transform: unset; margin-bottom: 0">
                         <input id="paperSwitch1" name="paperSwitch1" type="checkbox" checked="@_enqueued" @onchange="OnEnqueuedClicked" />
                         <div class="paper-switch-tile-card border">
-                            <div class="paper-switch-tile-card-front border background-success">Börja köa</div>
-                            <div class="paper-switch-tile-card-back border background-danger">Sluta köa</div>
+                            <div class="paper-switch-tile-card-front border background-success">@Localizer["Enqueue button"]</div>
+                            <div class="paper-switch-tile-card-back border background-danger">@Localizer["Dequeue button"]</div>
                         </div>
                     </label>
                 </div>
@@ -41,8 +44,8 @@ else
     <table style="table-layout: fixed">
         <thead>
             <tr>
-                <th style="width: 40px">#</th>
-                <th>Namn</th>
+                <th style="width: 40px">@Localizer["Table header, queue position"]</th>
+                <th>@Localizer["Table header, person name"]</th>
             </tr>
         </thead>
         <tbody>
@@ -57,7 +60,7 @@ else
                         @if (person.Id == CurrentPerson?.Id)
                         {
                             <div class="italic text-secondary padding-left flex-noshrink">
-                                (Här är du!)
+                                @Localizer["Table, current person highlight"]
                             </div>
                         }
                     </td>
@@ -66,7 +69,7 @@ else
         </tbody>
     </table>
 
-    <h3 class="text-muted">Personer som inte står i kö (@_peopleNotInQueue.Count st):</h3>
+    <h3 class="text-muted">@Localizer["Dequeued, header", _peopleNotInQueue.Count]</h3>
     <div class="row child-borders">
         @foreach (var (person, index) in _peopleNotInQueue.Select((p, i) => (p, i)))
         {
@@ -74,7 +77,7 @@ else
                @person.Name
                @if (person.Id == CurrentPerson?.Id)
                {
-                    <div class="italic text-secondary">(Här är du!)</div>
+                    <div class="italic text-secondary">@Localizer["Dequeued, current person highlight"]</div>
                }
            </div>
         }
@@ -82,7 +85,7 @@ else
 }
 else
 {
-    <p>Finns inga personer i detta rum.</p>
+    <p>@Localizer["Table replacement when empty"]</p>
 }
 
 @code {

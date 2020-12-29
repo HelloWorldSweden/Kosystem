@@ -5,5 +5,16 @@
       "wwwroot/css/site.css"
     ],
     "outputFileName": "wwwroot/css/site.min.css"
+  },
+  {
+    "inputFiles": [
+      "wwwroot/js/Kosystem/*.js"
+    ],
+    "outputFileName": "wwwroot/js/Kosystem.min.js",
+    "sourceMap": true,
+    "minify": {
+      "enabled": true,
+      "gzip": true
+    }
   }
 ]

@@ -17,6 +17,10 @@ footer {
     padding: 1rem 0;
 }
 
+nav > div {
+    margin: 0.3rem 1rem;
+}
+
 .valid.modified:not([type=checkbox]) {
     border: 2px solid #26b050;
 }
@@ -51,6 +55,14 @@ footer {
     flex-wrap: nowrap;
 }
 
+.flex-wrap {
+    flex-wrap: wrap;
+}
+
 .flex-noshrink {
     flex-shrink: 0;
+}
+
+.flex-grow {
+    flex-grow: 1;
 }

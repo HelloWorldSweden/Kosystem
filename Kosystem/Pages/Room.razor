@@ -5,6 +5,7 @@
 @inject IPersonSession PersonSession
 @inject IKosystemEventListener KosystemEvents
 @inject EventAwareRepositories EventAwareRepos
+@inject IStringLocalizer<Room> Localizer
 
 @if (_roomAlert is not null)
 {
@@ -47,7 +48,7 @@
 
             if (result is not AddResult.OK and not AddResult.AlreadyAdded)
             {
-                _roomAlert = $"Kunde inte lägga till dig i rum {RoomIdParser.Format(RoomId)}. Okänt fel...";
+                _roomAlert = Localizer["Alert, failed to join room", RoomIdParser.Format(RoomId)];
                 _hideRoomAlert = false;
                 return;
             }
@@ -129,17 +130,17 @@
     private (bool ok, string? err) TryEnqueue(PersonModel person, RoomModel room)
         => EventAwareRepos.EnqueuePerson(person, room) switch
         {
-            AddResult.AlreadyAdded => (false, "Du stod redan i kö."),
+            AddResult.AlreadyAdded => (false, Localizer["Alert, enqueue, already added"]),
             AddResult.OK => (true, null),
-            _ => (false, "Kunde inte ställa dig i kö. Okänt fel..."),
+            _ => (false, Localizer["Alert, enqueue, failed"]),
         };
 
     private (bool ok, string? err) TryDequeue(PersonModel person, RoomModel room)
         => EventAwareRepos.DequeuePerson(person, room) switch
         {
-            RemoveResult.AlreadyRemoved => (false, "Du stod redan inte i kö."),
+            RemoveResult.AlreadyRemoved => (false, Localizer["Alert, dequeue, already removed"]),
             RemoveResult.OK => (true, null),
-            _ => (false, "Kunde inte ta bort dig ur kö. Okänt fel..."),
+            _ => (false, Localizer["Alert, dequeue, failed"]),
         };
 
     public void Dispose()

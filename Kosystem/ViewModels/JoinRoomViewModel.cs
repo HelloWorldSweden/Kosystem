@@ -1,15 +1,19 @@
 using System.ComponentModel.DataAnnotations;
+using Kosystem.Attributes;
+using Kosystem.Resources;
 
 namespace Kosystem.ViewModels
 {
     public record JoinRoomViewModel
     {
-        [Required]
-        [RegularExpression(@"\s*#?\s*\d{1,4}\s*", ErrorMessage = "Room ID must be in the format '#1234'.")]
+        [Display(Name = nameof(JoinRoomViewModel) + "_" + nameof(RoomId), ResourceType = typeof(DisplayNameTranslations))]
+        [LocRequired]
+        [LocRoomIdFormat]
         public string? RoomId { get; set; }
 
-        [Required]
-        [StringLength(50, ErrorMessage = "Name is too long.")]
+        [Display(Name = nameof(JoinRoomViewModel) + "_" + nameof(Name), ResourceType = typeof(DisplayNameTranslations))]
+        [LocRequired]
+        [LocStringMaxLength(50)]
         public string? Name { get; set; }
     }
 }
