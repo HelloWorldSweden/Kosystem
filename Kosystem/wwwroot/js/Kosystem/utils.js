@@ -9,7 +9,7 @@ window.Kosystem = {
             return false;
         }
 
-        var index = Array.from(selectElement.options)
+        var index = Array.from(opts)
             .findIndex(opt => opt.value === value);
 
         if (index !== -1) {
