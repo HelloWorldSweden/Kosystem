@@ -1,3 +1,4 @@
+using System.Globalization;
 using Kosystem.Configuration;
 using Kosystem.Events;
 using Kosystem.Repository.EF;
@@ -25,8 +26,18 @@ namespace Kosystem
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddLocalization(options => options.ResourcesPath = "Resources");
+            services.Configure((System.Action<RequestLocalizationOptions>)(options =>
+            {
+                options.DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture("sv");
+
+                var cultureInfos = new[] { new CultureInfo("en"), new CultureInfo("sv") };
+                options.SupportedCultures = cultureInfos;
+                options.SupportedUICultures = cultureInfos;
+            }));
+
             services.AddRazorPages();
-            services.AddServerSideBlazor();
+            services.AddServerSideBlazor(options => options.DetailedErrors = true);
 
             var events = new KosystemEvents();
             services.AddSingleton<IKosystemEventListener>(events);
@@ -75,6 +86,7 @@ namespace Kosystem
             app.UseStaticFiles();
 
             app.UseRouting();
+            app.UseRequestLocalization();
 
             app.UseEndpoints(endpoints =>
             {

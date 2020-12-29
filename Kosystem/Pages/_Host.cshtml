@@ -1,6 +1,7 @@
 @page "/"
 @namespace Kosystem.Pages
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@inject Microsoft.Extensions.Localization.IStringLocalizer<Kosystem.Shared.SharedLocalization> Localizer
 @{
     Layout = null;
 }
@@ -10,7 +11,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Kösystem</title>
+    <title>@Localizer["<title>"]</title>
 
     <environment include="Development">
         <link rel="stylesheet" type="text/css" href="~/lib/papercss/dist/paper.css" />
@@ -33,12 +34,12 @@
 
     <div id="blazor-error-ui">
         <environment include="Staging,Production">
-            An error has occurred. This application may no longer respond until reloaded.
+            @Localizer["Blazor error message"]
         </environment>
         <environment include="Development">
-            An unhandled exception has occurred. See browser dev tools for details.
+            @Localizer["Blazor error message (development)"]
         </environment>
-        <a href="" class="reload">Reload</a>
+        <a href="" class="reload">@Localizer["Blazor error reload button"]</a>
         <a class="dismiss">🗙</a>
     </div>
 
@@ -46,14 +47,14 @@
         <div class="container row">
             <div class="md-6">
                 <div>
-                    <a href="/notices">Byggt med mjukvara med öppen källkod.</a>
+                    <a href="/notices">@Localizer["Footer OSS notice link"]</a>
                 </div>
                 <div>
-                    Körs med: @System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription
+                    @Localizer["Footer .NET version", System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription]
                 </div>
             </div>
             <div class="col-12 sm-6 text-right">
-                <a href="/login">Hantera rum</a>
+                <a href="/login">@Localizer["Login link"]</a>
             </div>
         </div>
     </footer>

@@ -15,7 +15,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.8" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="2.1.113" />
+    <PackageReference Include="Toolbelt.Blazor.LocalizedDataAnnotationsValidator" Version="1.0.1.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,6 +28,34 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
+    <Folder Include="Resources\Pages\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Resources\DisplayNameTranslations.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>DisplayNameTranslations.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\ValidationTranslations.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ValidationTranslations.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\DisplayNameTranslations.sv.resx">
+      <Generator></Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\DisplayNameTranslations.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>DisplayNameTranslations.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\ValidationTranslations.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ValidationTranslations.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>
