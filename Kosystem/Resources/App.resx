@@ -118,29 +118,66 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="&lt;title&gt;" xml:space="preserve">
-    <value>Kösystem</value>
+    <value>Queue app</value>
+  </data>
+  <data name="Author, link" xml:space="preserve">
+    <value>Hello World!</value>
+    <comment>Link label</comment>
+  </data>
+  <data name="Author, pretext" xml:space="preserve">
+    <value>Created by</value>
+  </data>
+  <data name="Author, URL" xml:space="preserve">
+    <value>https://helloworld.se</value>
+  </data>
+  <data name="Authorizing, description" xml:space="preserve">
+    <value>Please wait. You will soon get to your destination.</value>
+  </data>
+  <data name="Authorizing, header" xml:space="preserve">
+    <value>Logging you in...</value>
   </data>
   <data name="Blazor error message" xml:space="preserve">
-    <value>Ett fel har uppstått. Sidan kan sluta att fungera tills den är uppdaterad.</value>
+    <value>An error has occurred. This application may no longer respond until reloaded.</value>
     <comment>"Something went wrong", together with a button to reload the page.</comment>
   </data>
   <data name="Blazor error message (development)" xml:space="preserve">
-    <value>Ett ohanterat felmeddelande har uppstått. Se webläsarens dev tools för mer detaljer.</value>
+    <value>An unhandled exception has occurred. See browser dev tools for details.</value>
     <comment>Same as "Blazor error message", but only shown in development builds.</comment>
   </data>
   <data name="Blazor error reload button" xml:space="preserve">
-    <value>Uppdatera</value>
+    <value>Reload</value>
     <comment>If pressed, the page is reloaded.</comment>
   </data>
+  <data name="Brand" xml:space="preserve">
+    <value>Queue app</value>
+  </data>
   <data name="Footer .NET version" xml:space="preserve">
-    <value>Körs med: {0}</value>
+    <value>Powered by: {0}</value>
     <comment>{0} = .NET CLR version, as provided by System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription. Example: ".NET 5.0.0"</comment>
   </data>
   <data name="Footer OSS notice link" xml:space="preserve">
-    <value>Byggt med mjukvara med öppen källkod.</value>
+    <value>Built with open source software.</value>
     <comment>Link label to the page of OSS (Open Source Software) licenses.</comment>
   </data>
   <data name="Login link" xml:space="preserve">
-    <value>Hantera rum</value>
+    <value>Manage rooms</value>
+  </data>
+  <data name="Not found, description" xml:space="preserve">
+    <value>There doesn't seem to be a page here.</value>
+  </data>
+  <data name="Not found, header" xml:space="preserve">
+    <value>Sorry, but 404</value>
+  </data>
+  <data name="Not found, index link" xml:space="preserve">
+    <value>Return to the start page here.</value>
+  </data>
+  <data name="Unauthorized, description" xml:space="preserve">
+    <value>You do not have permission to access this site. Seems like you're logged out.</value>
+  </data>
+  <data name="Unauthorized, header" xml:space="preserve">
+    <value>Sorry, but 401</value>
+  </data>
+  <data name="Unauthorized, login link" xml:space="preserve">
+    <value>Log in here.</value>
   </data>
 </root>
