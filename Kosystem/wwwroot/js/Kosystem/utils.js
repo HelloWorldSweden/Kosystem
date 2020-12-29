@@ -3,21 +3,20 @@ window.Kosystem = {
      * @param {HTMLSelectElement} selectElement
      * @param {string} value
      */
-    selectValue(selectElement, value) {
+    selectValue: function (selectElement, value) {
         var opts = selectElement.options;
         if (!opts) {
             return false;
         }
 
-        for (var i = selectElement.options.length - 1; i >= 0; i--) {
-            var opt = opts[i];
+        var index = Array.from(selectElement.options)
+            .findIndex(opt => opt.value === value);
 
-            if (opt && opt.value === value) {
-                selectElement.selectedIndex = i;
-                return true;
-            }
+        if (index !== -1) {
+            selectElement.selectedIndex = index;
+            return true;
+        } else {
+            return false;
         }
-
-        return false;
     }
 };
