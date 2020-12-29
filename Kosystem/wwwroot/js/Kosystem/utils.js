@@ -1,3 +1,4 @@
+
 window.Kosystem = {
     /**
      * @param {HTMLSelectElement} selectElement
@@ -10,7 +11,7 @@ window.Kosystem = {
         }
 
         var index = Array.from(opts)
-            .findIndex(opt => opt.value === value);
+            .findIndex(function (opt) { return opt.value === value });
 
         if (index !== -1) {
             selectElement.selectedIndex = index;
