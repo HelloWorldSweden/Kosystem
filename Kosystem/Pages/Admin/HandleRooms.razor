@@ -5,7 +5,7 @@
 <h1>Hantera rum</h1>
 
 <EditForm Model="createRoomModel" OnValidSubmit="HandleValidCreateRoomSubmit">
-    <DataAnnotationsValidator />
+    <LocalizedDataAnnotationsValidator />
 
     @if (createdRoom is not null)
     {
@@ -22,7 +22,7 @@
     <div class="row">
         <div class="col sm-8">
             <div class="form-group">
-                <label for="roomName">Rumsnamn</label>
+                <label for="roomName">@DisplayNameTranslations.CreateRoomViewModel_Name</label>
                 <InputText class="input-block border-3" type="text" id="roomName" @bind-Value="createRoomModel.Name" />
                 <ValidationMessage For="() => createRoomModel.Name" />
             </div>
