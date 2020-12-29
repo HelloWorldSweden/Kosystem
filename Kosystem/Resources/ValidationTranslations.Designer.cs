@@ -61,7 +61,7 @@ namespace Kosystem.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} must be filled in..
+        ///   Looks up a localized string similar to The &apos;{0}&apos; field must be filled in..
         /// </summary>
         public static string Required {
             get {
@@ -79,7 +79,7 @@ namespace Kosystem.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} is too long. Cannot be longer than {1} characters..
+        ///   Looks up a localized string similar to The &apos;{0}&apos; field is too long. Cannot be longer than {1} characters..
         /// </summary>
         public static string StringMaxLength {
             get {

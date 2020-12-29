@@ -61,6 +61,15 @@ namespace Kosystem.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to New room name.
+        /// </summary>
+        public static string CreateRoomViewModel_Name {
+            get {
+                return ResourceManager.GetString("CreateRoomViewModel_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Your name.
         /// </summary>
         public static string JoinRoomViewModel_Name {
@@ -75,6 +84,15 @@ namespace Kosystem.Resources {
         public static string JoinRoomViewModel_RoomId {
             get {
                 return ResourceManager.GetString("JoinRoomViewModel_RoomId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password.
+        /// </summary>
+        public static string LoginViewModel_Password {
+            get {
+                return ResourceManager.GetString("LoginViewModel_Password", resourceCulture);
             }
         }
     }

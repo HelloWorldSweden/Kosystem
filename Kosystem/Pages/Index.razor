@@ -18,14 +18,14 @@
     <div class="row">
         <div class="col sm-4">
             <div class="form-group">
-                <label for="roomNumber">Rumsnumret</label>
+                <label for="roomNumber">@DisplayNameTranslations.JoinRoomViewModel_RoomId</label>
                 <InputText class="input-block border-2" id="roomNumber" placeholder="#0000" @bind-Value="model.RoomId" />
                 <ValidationMessage For="() => model.RoomId" />
             </div>
         </div>
         <div class="col sm-8">
             <div class="form-group">
-                <label for="name">Ditt namn</label>
+                <label for="name">@DisplayNameTranslations.JoinRoomViewModel_Name</label>
                 <InputText class="input-block border-3" type="text" id="name" @bind-Value="model.Name" />
                 <ValidationMessage For="() => model.Name" />
             </div>

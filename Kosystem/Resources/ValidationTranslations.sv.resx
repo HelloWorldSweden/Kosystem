@@ -118,12 +118,12 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Required" xml:space="preserve">
-    <value>{0} måste fyllas i.</value>
+    <value>'{0}' fältet måste fyllas i.</value>
   </data>
   <data name="RoomIdFormat" xml:space="preserve">
     <value>Rumsnumret måste följa formatet '#1234'.</value>
   </data>
   <data name="StringMaxLength" xml:space="preserve">
-    <value>{0} är för långt. Kan inte vara mer än {1} karaktärer.</value>
+    <value>'{0}' fältet är för långt. Får inte vara mer än {1} karaktärer.</value>
   </data>
 </root>

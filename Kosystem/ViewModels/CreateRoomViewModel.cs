@@ -1,11 +1,14 @@
 using System.ComponentModel.DataAnnotations;
+using Kosystem.Attributes;
+using Kosystem.Resources;
 
 namespace Kosystem.ViewModels
 {
     public record CreateRoomViewModel
     {
-        [Required]
-        [MaxLength(64, ErrorMessage = "Name is too long.")]
+        [Display(Name = nameof(CreateRoomViewModel) + "_" + nameof(Name), ResourceType = typeof(DisplayNameTranslations))]
+        [LocRequired]
+        [LocStringMaxLength(64)]
         public string? Name { get; set; }
     }
 }

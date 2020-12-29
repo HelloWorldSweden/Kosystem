@@ -118,12 +118,12 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Required" xml:space="preserve">
-    <value>{0} must be filled in.</value>
+    <value>The '{0}' field must be filled in.</value>
   </data>
   <data name="RoomIdFormat" xml:space="preserve">
     <value>Room ID must follow the format '#1234'.</value>
   </data>
   <data name="StringMaxLength" xml:space="preserve">
-    <value>{0} is too long. Cannot be longer than {1} characters.</value>
+    <value>The '{0}' field is too long. Cannot be longer than {1} characters.</value>
   </data>
 </root>
