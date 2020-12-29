@@ -1,12 +1,12 @@
 @inject IStringLocalizer<App> Localizer
 
-<nav class="border split-nav no-collapse">
+<nav class="border split-nav no-collapse flex-wrap padding-none">
     <div class="nav-brand">
         <h4><NavLink class="nav-link" href="/" Match="NavLinkMatch.All">@Localizer["Brand"]</NavLink></h4>
     </div>
-    <div class="incollapsible">
+    <div class="incollapsible flex-grow">
         <div class="incollapsible-body">
-            <ul class="inline">
+            <ul class="inline text-left">
                 <li>
                     @Localizer["Author, pretext"]
                     <a href="@Localizer["Author, URL"]" target="_blank">@Localizer["Author, link"]</a>
@@ -15,5 +15,7 @@
         </div>
     </div>
 
-    <Kosystem.Components.LanguageComponent></Kosystem.Components.LanguageComponent>
+    <div>
+        <Kosystem.Components.LanguageComponent></Kosystem.Components.LanguageComponent>
+    </div>
 </nav>
