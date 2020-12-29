@@ -1,8 +1,9 @@
 @page "/admin"
 @attribute [Authorize]
 @inject IRoomRepository RoomRepository
+@inject IStringLocalizer<HandleRooms> Localizer
 
-<h1>Hantera rum</h1>
+<h1>@Localizer["Header"]</h1>
 
 <EditForm Model="createRoomModel" OnValidSubmit="HandleValidCreateRoomSubmit">
     <LocalizedDataAnnotationsValidator />
@@ -12,8 +13,8 @@
         <input class="alert-state" id="room-created-alert" type="checkbox" @bind="hideCreatedRoomDialog" />
         <div class="alert alert-success background-success dismissible">
             <div>
-                <h3>Rum <span class="badge success">#@createdRoom.Id.ToString("0000") @createdRoom.Name</span> har skapats!</h3>
-                <p><a href="/@createdRoom.Id">Gå till rum #@createdRoom.Id.ToString("0000")</a></p>
+                <h3>@((MarkupString)Localizer["Alert, room created, header", RoomIdParser.Format(createdRoom.Id)].Value)</h3>
+                <p><a href="/@createdRoom.Id">@Localizer["Alert, room created, enter room link", RoomIdParser.Format(createdRoom.Id)]</a></p>
             </div>
             <label class="btn-close" for="room-created-alert">X</label>
         </div>
@@ -28,44 +29,54 @@
             </div>
         </div>
         <div class="sm-4 col">
-            <button class="border-5" type="submit" style="margin-top: 1.4rem">Skapa nytt rum</button>
+            <button class="border-5" type="submit" style="margin-top: 1.4rem">@Localizer["Create room, submit"]</button>
         </div>
     </div>
 </EditForm>
 
-<h2>Existerande rum</h2>
+<h2>@Localizer["Header, existing rooms"]</h2>
 
 @if (rooms.Count > 0)
 {
     <table>
         <thead>
             <tr>
-                <th style="width: 5.5rem">Rumsnummer</th>
-                <th class="rooms-table-room-name">Rumsnamn</th>
-                <th>Handling</th>
+                <th style="width: 5.5rem">@Localizer["Table header, room ID"]</th>
+                <th class="rooms-table-room-name">@Localizer["Table header, room name"]</th>
+                <th>@Localizer["Table header, actions"]</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var room in rooms.OrderBy(o => o.Name).ThenBy(o => o.Id))
             {
                 <tr>
-                    <td>#@room.Id.ToString("0000")</td>
+                    <td>@RoomIdParser.Format(room.Id)</td>
                     <td class="rooms-table-room-name">@room.Name</td>
                     <td class="row flex-middle">
                         <span>
-                            <a href="/@room.Id.ToString("0000")" target="_blank">
-                                <img class="no-border" src="/img/external-link.svg" style="width: 2rem; float: left;" title="Öppna rum i ny flik" alt="Öppna"/>
+                            <a href="/@RoomIdParser.FormatForUrl(room.Id)" target="_blank">
+                                <img class="no-border" src="/img/external-link.svg" style="width: 2rem; float: left;"
+                                    title="@Localizer["Action, open, image tooltip", RoomIdParser.Format(room.Id)]"
+                                    alt="@Localizer["Action, open, image alt"]"
+                                />
                             </a>
                         </span>
                         <button type="button" style="padding: 0; width: 2rem;" @onclick="@(_ => deleteRoom = room.Id)">
-                            <img class="no-border" src="/img/delete.svg" style="width: 2rem; float: left;" title="Ta bort rum" alt="Ta bort"/>
+                            <img class="no-border" src="/img/delete.svg" style="width: 2rem; float: left;"
+                                title="@Localizer["Action, remove, image tooltip", RoomIdParser.Format(room.Id)]"
+                                alt="@Localizer["Action, remove, image alt"]"
+                            />
                         </button>
                         @if (deleteRoom == room.Id)
                         {
                             <div class="danger">
-                                Ta bort #@room.Id.ToString("0000")?
-                                <button type="button" class="btn-danger btn-small" @onclick="@(_ => HandleDeleteRoom(room.Id))">Ja!</button>
-                                <button type="button" class="btn-primary btn-small" @onclick="@(_ => deleteRoom = null)">Avbryt</button>
+                                @Localizer["Remove room, confirmation", RoomIdParser.Format(room.Id)]
+                                <button type="button" class="btn-danger btn-small" @onclick="@(_ => HandleDeleteRoom(room.Id))">
+                                    @Localizer["Remove room, confirm button"]
+                                </button>
+                                <button type="button" class="btn-primary btn-small" @onclick="@(_ => deleteRoom = null)">
+                                    @Localizer["Remove room, abort button"]
+                                </button>
                             </div>
                         }
                     </td>
@@ -77,7 +88,7 @@
 else
 {
     <p>
-        Finns inga rum. Skapa ett genom att fylla i textfältet ovan!
+        @Localizer["Table replacement when empty"]
     </p>
 }
 

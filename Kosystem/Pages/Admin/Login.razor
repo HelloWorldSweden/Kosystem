@@ -2,17 +2,18 @@
 @inject IAuthSetter AuthSetter
 @inject Microsoft.Extensions.Options.IOptions<LoginOptions> LoginOptions
 @inject NavigationManager NavigationManager
+@inject IStringLocalizer<Login> Localizer
 
 <AuthorizeView>
     <NotAuthorized Context="NotAuthorizedContext">
-        <h1>Logga in först</h1>
+        <h1>@Localizer["Header"]</h1>
 
         <EditForm Model="model" OnValidSubmit="HandleValidSubmit">
             <LocalizedDataAnnotationsValidator />
 
             <input class="alert-state" id="invalid-credentials" type="checkbox" @bind="hideInvalidCredentialsAlert" />
             <div class="alert alert-danger dismissible border-2">
-                Fel lösenord. Du får ej passera :(
+                @Localizer["Alert, wrong password"]
                 <label class="btn-close" for="invalid-credentials">X</label>
             </div>
 
@@ -27,14 +28,14 @@
             </div>
 
             <div class="row flex-center">
-                <button class="btn-large border-6" type="submit">Logga in</button>
+                <button class="btn-large border-6" type="submit">@Localizer["Submit button"]</button>
             </div>
         </EditForm>
 
     </NotAuthorized>
     <Authorized>
         <p class="text-muted">
-            Omdirigerar dig till admin sidan...
+            @Localizer["Redirecting message"]
         </p>
     </Authorized>
 </AuthorizeView>

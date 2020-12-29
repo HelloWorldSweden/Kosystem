@@ -3,8 +3,9 @@
 @inject IPersonSession PersonSession
 @inject IRoomRepository RoomRepository
 @inject NavigationManager navManager
+@inject IStringLocalizer<Index> Localizer
 
-<h1>Börja köa efter hjälp</h1>
+<h1>@Localizer["Header"]</h1>
 
 <EditForm Model="model" OnValidSubmit="HandleValidSubmit">
     <LocalizedDataAnnotationsValidator />
@@ -39,11 +40,11 @@
                     && previousRoomId.HasValue
                     && RoomIdParser.RoomIdEquals(model.RoomId, previousRoomId.Value))
                 {
-                    <text>Gå tillbaka till rum</text>
+                    <text>@Localizer["Submit button, return to previous"]</text>
                 }
                 else
                 {
-                    <text>Gå med rum</text>
+                    <text>@Localizer["Submit button"]</text>
                 }
             </button>
         </div>
@@ -97,7 +98,7 @@
 
         if (!RoomIdParser.TryParse(model.RoomId, out var roomId))
         {
-            roomAlert = $"Värde '{model.RoomId?.Trim()}' är inte ett giltigt rumsnummer.";
+            roomAlert = Localizer["Join error, invalid room ID", model.RoomId?.Trim() ?? ""];
             hideRoomAlert = false;
             return;
         }
@@ -106,8 +107,8 @@
         if (room is null)
         {
             roomAlert = previousRoomId == roomId
-                ? $"Rum {RoomIdParser.Format(roomId)} finns inte längre."
-                : $"Rum {RoomIdParser.Format(roomId)} finns inte.";
+                ? Localizer["Join error, room does not exist anymore", RoomIdParser.Format(roomId)]
+                : Localizer["Join error, room does not exist", RoomIdParser.Format(roomId)];
             hideRoomAlert = false;
             return;
         }
