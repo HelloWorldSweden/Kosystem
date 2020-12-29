@@ -7,6 +7,7 @@
     "browser": true
   },
   "rules": {
-    "eqeqeq": "warn"
+    "eqeqeq": "warn",
+    "complexity": [ "error", { "max": 5 } ]
   }
 }
